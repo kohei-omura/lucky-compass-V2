@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔮 Lucky Compass — 全占術統合 開運ナビ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700;900&family=Zen+Old+Mincho:wght@400;700;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#C9A84C; --gold-light:#F0D080; --gold-dark:#8A6A1A;
+  --deep:#07040F; --purple:#14082A; --violet:#2D1B5E;
+  --accent:#8B5CF6; --rose:#FF6B9D; --cyan:#4DC8E0;
+  --green:#50C878; --text:#F0E6FF; --muted:#9A8AB0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Serif JP',serif;background:var(--deep);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── Starfield ── */
+.starfield{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) infinite var(--delay,0s)}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:1;transform:scale(1.6)}}
+.shoot{position:absolute;width:130px;height:1px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:shoot var(--sd,5s) linear infinite var(--ss,0s);opacity:0}
+@keyframes shoot{0%{transform:translateX(-200px) translateY(0) rotate(-30deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(calc(100vw + 200px)) translateY(200px) rotate(-30deg);opacity:0}}
+
+/* ── Layout ── */
+.wrap{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:20px 16px 80px}
+
+/* ── Header ── */
+header{text-align:center;padding:36px 0 22px}
+.hdr-sym{font-size:3rem;display:block;margin-bottom:8px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(201,168,76,.6))}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+h1{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.12em;margin-bottom:5px}
+.subtitle{font-size:.7rem;color:var(--muted);letter-spacing:.2em}
+
+/* ── Info bar ── */
+.info-bar{display:flex;gap:8px;margin:16px 0 12px}
+.info-chip{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:9px 8px;text-align:center}
+.ic-label{color:var(--gold);font-size:.6rem;letter-spacing:.1em;margin-bottom:2px}
+.ic-val{color:var(--text);font-weight:700;font-size:.76rem}
+
+/* ── Tabs ── */
+.tab-nav{display:flex;gap:5px;margin:14px 0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tab-nav::-webkit-scrollbar{display:none}
+.tb{flex-shrink:0;padding:8px 13px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:20px;color:var(--muted);font-size:.72rem;font-family:'Noto Serif JP',serif;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tb.active,.tb:hover{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold-light)}
+.tc{display:none}.tc.active{display:block;animation:fiu .45s ease}
+@keyframes fiu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Settings card ── */
+.scard{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.14);border-radius:18px;padding:18px;margin:12px 0}
+.sc-title{font-size:.7rem;color:var(--gold);letter-spacing:.15em;margin-bottom:14px;text-align:center}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg.full{grid-column:1/-1}
+label{font-size:.66rem;color:var(--muted);letter-spacing:.07em}
+select,input{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.22);border-radius:10px;color:var(--text);padding:8px 10px;font-size:.76rem;font-family:'Noto Serif JP',serif;width:100%;appearance:none}
+select:focus,input:focus{outline:none;border-color:var(--gold)}
+option{background:#1A0A2E}
+
+/* ── Buttons ── */
+.main-btn{width:100%;padding:15px;border:none;border-radius:14px;color:#fff;font-size:.92rem;font-family:'Zen Old Mincho',serif;font-weight:700;letter-spacing:.1em;cursor:pointer;margin:12px 0;background:linear-gradient(135deg,#7C3AED,#C9A84C,#7C3AED);background-size:200% 200%;animation:gshift 3s ease infinite;position:relative;overflow:hidden;transition:transform .1s}
+@keyframes gshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.main-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.1),transparent);pointer-events:none}
+.main-btn:active{transform:scale(.98)}
+.loc-btn{width:100%;padding:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:12px;color:var(--gold);font-size:.8rem;font-family:'Noto Serif JP',serif;cursor:pointer;margin-bottom:10px;transition:all .2s}
+.loc-btn:hover{background:rgba(201,168,76,.2)}
+.loc-btn.ok{border-color:rgba(100,255,150,.4);color:#80FFB0;background:rgba(100,255,150,.05)}
+
+/* ── Cards ── */
+.rc{border-radius:18px;padding:20px;margin:12px 0;position:relative;overflow:hidden}
+.rc::before{content:'';position:absolute;inset:0;border-radius:18px;padding:1px;background:linear-gradient(135deg,var(--gold),transparent,var(--accent));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.c-time{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(7,4,15,.8))}
+.c-place{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(7,4,15,.8))}
+.c-food{background:linear-gradient(135deg,rgba(255,107,157,.1),rgba(7,4,15,.8))}
+.c-div{background:linear-gradient(135deg,rgba(45,27,94,.5),rgba(7,4,15,.8))}
+.c-gacha{background:linear-gradient(135deg,rgba(77,200,224,.1),rgba(7,4,15,.8))}
+.c-daily{background:linear-gradient(135deg,rgba(80,200,120,.1),rgba(7,4,15,.8))}
+.c-cal{background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(7,4,15,.9))}
+.c-msg{background:linear-gradient(135deg,rgba(201,168,76,.07),rgba(139,92,246,.07));border:1px solid rgba(201,168,76,.22);border-radius:14px;padding:16px;margin-bottom:12px;font-size:.85rem;line-height:1.85}
+
+.ch{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.ci{font-size:1.5rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border-radius:11px;flex-shrink:0}
+.ct{font-family:'Zen Old Mincho',serif;font-size:.96rem;color:var(--gold);letter-spacing:.1em}
+.cs{font-size:.66rem;color:var(--muted);margin-top:1px}
+
+/* ── Time grid ── */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.titem{background:rgba(255,255,255,.04);border-radius:11px;padding:10px;text-align:center}
+.trange{font-size:.85rem;font-weight:700;color:var(--gold);margin-bottom:3px}
+.tscore{font-size:1.35rem;font-weight:900;margin:3px 0}
+.tlabel{font-size:.66rem;color:var(--muted)}
+
+/* ── Place / Food ── */
+.pi{background:rgba(255,255,255,.04);border-radius:13px;padding:13px;margin-bottom:8px;border-left:3px solid var(--accent)}
+.pr{font-size:.6rem;color:var(--accent);letter-spacing:.1em;margin-bottom:3px}
+.pn{font-size:.92rem;font-weight:700;margin-bottom:2px}
+.ps{font-size:.75rem;color:var(--gold);margin-bottom:2px}
+.pd{font-size:.72rem;color:var(--muted);line-height:1.6}
+.fi{background:rgba(255,255,255,.04);border-radius:13px;padding:13px;margin-bottom:8px;border-left:3px solid var(--rose)}
+.fr2{font-size:.6rem;color:var(--rose);letter-spacing:.1em;margin-bottom:3px}
+
+/* ── Divination ── */
+.di{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.di:last-child{border-bottom:none}
+.dn{font-size:.66rem;color:var(--gold);letter-spacing:.1em;margin-bottom:3px}
+.dt{font-size:.76rem;line-height:1.7}
+
+/* ── Gacha ── */
+.gi{background:rgba(255,255,255,.04);border-radius:13px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:11px;border-left:3px solid var(--cyan)}
+.gi.t1{border-left-color:#FFD700;background:rgba(255,215,0,.06)}
+.gi.t2{border-left-color:#C0C0C0}
+.gi.t3{border-left-color:#CD7F32}
+.grb{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;flex-shrink:0}
+.b1{background:linear-gradient(135deg,#FFD700,#B8860B);color:#000}
+.b2{background:linear-gradient(135deg,#C0C0C0,#808080);color:#000}
+.b3{background:linear-gradient(135deg,#CD7F32,#8B4513);color:#fff}
+.bn{background:rgba(77,200,224,.2);color:var(--cyan)}
+.ginfo{flex:1}
+.gname{font-size:.88rem;font-weight:700;margin-bottom:2px}
+.greason{font-size:.68rem;color:var(--muted);line-height:1.5}
+.gpull{font-size:.68rem;padding:3px 9px;border-radius:20px;background:rgba(77,200,224,.15);color:var(--cyan);border:1px solid rgba(77,200,224,.3);white-space:nowrap;flex-shrink:0}
+.gpull.rec{background:rgba(255,215,0,.15);color:#FFD700;border-color:rgba(255,215,0,.4)}
+.gpull.ng{background:rgba(255,100,100,.1);color:#FF8080;border-color:rgba(255,100,100,.3)}
+
+/* ── Daily ── */
+.ditem{background:rgba(255,255,255,.04);border-radius:13px;padding:13px;margin-bottom:9px;display:flex;align-items:flex-start;gap:11px}
+.demoji{font-size:1.9rem;flex-shrink:0}
+.dlabel{font-size:.6rem;color:var(--gold);letter-spacing:.1em;margin-bottom:2px}
+.dtitle{font-size:.9rem;font-weight:700;margin-bottom:2px}
+.dsub{font-size:.7rem;color:var(--muted);margin-bottom:3px}
+.dreason{font-size:.7rem;color:var(--cyan);line-height:1.6}
+
+/* ── Calendar ── */
+.cal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.cal-nav{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:5px 12px;color:var(--gold);cursor:pointer;font-size:.78rem}
+.cal-title{font-family:'Cinzel',serif;font-size:.95rem;color:var(--gold-light)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cdh{text-align:center;font-size:.6rem;color:var(--muted);padding:3px 0}
+.cd{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:.7rem;cursor:pointer;transition:all .2s;position:relative}
+.cd.today{border:1px solid var(--gold);color:var(--gold-light);font-weight:700}
+.cd.l5{background:rgba(255,215,0,.28);color:#FFD700;font-weight:900}
+.cd.l4{background:rgba(201,168,76,.2);color:var(--gold-light);font-weight:700}
+.cd.l3{background:rgba(139,92,246,.15);color:#C4B5FD}
+.cd.l2{background:rgba(255,255,255,.04);color:var(--text)}
+.cd.l1{background:rgba(255,100,100,.08);color:#FF9090}
+.cd.om{opacity:.22}
+.cd-star{font-size:.48rem;position:absolute;top:1px;right:2px}
+.cal-legend{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.cl-item{display:flex;align-items:center;gap:4px;font-size:.6rem;color:var(--muted)}
+.cl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.cal-detail{background:rgba(255,255,255,.04);border-radius:12px;padding:13px;margin-top:10px;font-size:.78rem;line-height:1.7;border:1px solid rgba(201,168,76,.15);display:none}
+.cal-detail.show{display:block;animation:fiu .4s ease}
+
+/* ── Score ring ── */
+.score-wrap{text-align:center;padding:4px 0 16px}
+.score-ring{width:130px;height:130px;margin:0 auto 14px;position:relative}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-family:'Cinzel',serif;font-size:2.1rem;font-weight:700;color:var(--gold-light);line-height:1}
+.score-lbl{font-size:.62rem;color:var(--muted);letter-spacing:.15em;margin-top:2px}
+.verdict{font-family:'Zen Old Mincho',serif;font-size:1.1rem;color:var(--gold-light);margin-bottom:8px;letter-spacing:.1em}
+
+/* ── Lucky items grid ── */
+.li-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.li-item{background:rgba(255,255,255,.04);border-radius:11px;padding:11px;display:flex;align-items:center;gap:9px}
+.li-icon{font-size:1.4rem;flex-shrink:0}
+.li-cat{font-size:.58rem;color:var(--muted);letter-spacing:.08em}
+.li-name{font-size:.82rem;color:var(--text)}
+.color-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.cdot{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.18);cursor:pointer;transition:transform .2s;position:relative}
+.cdot:hover{transform:scale(1.2)}
+
+/* ── Error ── */
+.err{background:rgba(255,100,100,.1);border:1px solid rgba(255,100,100,.3);border-radius:12px;padding:12px;text-align:center;color:#FF8080;font-size:.8rem;margin:10px 0;display:none}
+.err.show{display:block}
+
+/* ── Game selector ── */
+#game-selector{display:flex;flex-wrap:wrap;gap:5px}
+
+/* ── Progress bars ── */
+.pbar-wrap{margin-bottom:12px}
+.pbar-hdr{display:flex;justify-content:space-between;margin-bottom:4px}
+.pbar-name{font-size:.76rem;color:var(--text)}
+.pbar-score{font-family:'Cinzel',serif;font-size:.76rem;color:var(--gold-light)}
+.pbar{height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:4px;background:linear-gradient(to right,var(--violet),var(--gold));transition:width 1.2s ease}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--deep)}
+::-webkit-scrollbar-thumb{background:var(--violet);border-radius:4px}
+footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem;letter-spacing:.1em}
+</style>
+</head>
+<body>
+<div class="starfield" id="sf"></div>
+<div class="wrap">
+
+<header>
+  <span class="hdr-sym">🔮</span>
+  <h1>Lucky Compass</h1>
+  <p class="subtitle">全15種占術統合 ✦ 開運ナビ ✦ 無料</p>
+</header>
+
+<div class="info-bar">
+  <div class="info-chip"><div class="ic-label">📅 日時</div><div class="ic-val" id="dt">--</div></div>
+  <div class="info-chip"><div class="ic-label">🌙 六曜</div><div class="ic-val" id="ry">--</div></div>
+  <div class="info-chip"><div class="ic-label">📍 位置</div><div class="ic-val" id="loc">未取得</div></div>
+</div>
+
+<div class="tab-nav">
+  <button class="tb active" onclick="switchTab('fortune',this)">🔮 今日の運勢</button>
+  <button class="tb" onclick="switchTab('gacha',this)">🎰 ガチャ占い</button>
+  <button class="tb" onclick="switchTab('daily',this)">✨ 今日の開運</button>
+  <button class="tb" onclick="switchTab('calendar',this)">📅 月間カレンダー</button>
+  <button class="tb" onclick="switchTab('settings',this)">⚙️ 設定</button>
+</div>
+
+<div class="err" id="errmsg"></div>
+
+<!-- ===== TAB: FORTUNE ===== -->
+<div class="tc active" id="tc-fortune">
+  <!-- 位置情報取得エリア -->
+  <div class="scard" style="padding:14px 18px;margin-bottom:10px" id="location-card">
+    <div style="font-size:.7rem;color:var(--gold);letter-spacing:.12em;margin-bottom:12px;text-align:center">📍 場所を設定（飲食店検索に使用）</div>
+
+    <!-- GPS取得 -->
+    <button class="loc-btn" id="loc-btn" onclick="getLocation()">
+      📡 GPSで現在地を自動取得
+    </button>
+
+    <!-- 区切り -->
+    <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
+      <div style="font-size:.66rem;color:var(--muted)">または</div>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
+    </div>
+
+    <!-- 手動住所入力 -->
+    <div style="display:flex;gap:8px">
+      <input class="api-key-input" type="text" id="manual-addr-input"
+        placeholder="住所・駅名・施設名を入力（例：渋谷駅、大阪城公園）"
+        style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.25);border-radius:10px;color:var(--text);padding:9px 12px;font-size:.78rem;font-family:'Noto Serif JP',serif;"
+        onkeydown="if(event.key==='Enter')geocodeManual()">
+      <button onclick="geocodeManual()" style="padding:9px 14px;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);border-radius:10px;color:var(--gold);font-size:.75rem;cursor:pointer;font-family:'Noto Serif JP',serif;white-space:nowrap;transition:all .2s">🔍 検索</button>
+    </div>
+
+    <!-- ステータス表示 -->
+    <div id="loc-status" style="font-size:.7rem;color:var(--muted);margin-top:8px;min-height:18px;line-height:1.5;text-align:center"></div>
+  </div>
+  <div class="scard" style="padding:14px 18px">
+    <div class="fr">
+      <div class="fg"><label>星座</label>
+        <select id="zodiac">
+          <option value="牡羊座" selected>牡羊座 ♈</option><option value="牡牛座">牡牛座 ♉</option>
+          <option value="双子座">双子座 ♊</option><option value="蟹座">蟹座 ♋</option>
+          <option value="獅子座">獅子座 ♌</option><option value="乙女座">乙女座 ♍</option>
+          <option value="天秤座">天秤座 ♎</option><option value="蠍座">蠍座 ♏</option>
+          <option value="射手座">射手座 ♐</option><option value="山羊座">山羊座 ♑</option>
+          <option value="水瓶座">水瓶座 ♒</option><option value="魚座">魚座 ♓</option>
+        </select>
+      </div>
+      <div class="fg"><label>血液型</label>
+        <select id="blood">
+          <option>A型</option><option selected>B型</option><option>O型</option><option>AB型</option>
+        </select>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>干支</label>
+        <select id="eto">
+          <option>子</option><option>丑</option><option>寅</option><option>卯</option>
+          <option>辰</option><option>巳</option><option>午</option><option>未</option>
+          <option>申</option><option value="酉" selected>酉</option><option>戌</option><option>亥</option>
+        </select>
+      </div>
+      <div class="fg"><label>生年月日</label><input type="date" id="bdate" value="1993-04-14"></div>
+    </div>
+    <div class="fg full" style="margin-top:6px"><label>場所・状況</label>
+      <input type="text" id="situation" placeholder="例：宮崎市 イオンモール" value="宮崎市 イオンモール">
+    </div>
+  </div>
+
+  <!-- Restaurant Search Section -->
+  <div class="rc c-food" style="margin:10px 0">
+    <div class="ch">
+      <div class="ci">🍽️</div>
+      <div>
+        <div class="ct">周辺の飲食店を検索</div>
+        <div class="cs" id="rest-search-cs">📍 GPSで現在地取得後に周辺店舗を自動検索</div>
+      </div>
+    </div>
+    <div id="no-gps-msg" class="no-gps-msg">
+      📍 上の「現在地を取得」ボタンでGPS取得すると、<br>全国どこでも周辺の実際の飲食店名が表示されます
+    </div>
+    <div id="rest-search-bar" style="display:none;margin-bottom:10px">
+      <div class="fr">
+        <div class="fg">
+          <label>カテゴリ</label>
+          <select id="rest-category">
+            <option value="all">すべて</option>
+            <option value="restaurant">レストラン</option>
+            <option value="fast_food">ファストフード</option>
+            <option value="cafe">カフェ</option>
+            <option value="ramen">ラーメン</option>
+            <option value="sushi">寿司</option>
+            <option value="izakaya">居酒屋</option>
+            <option value="udon">うどん・蕎麦</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>検索範囲</label>
+          <select id="rest-radius">
+            <option value="300">300m以内</option>
+            <option value="500" selected>500m以内</option>
+            <option value="1000">1km以内</option>
+            <option value="2000">2km以内</option>
+          </select>
+        </div>
+      </div>
+      <button class="loc-btn" onclick="searchRestaurants()" style="margin-top:8px">🔍 周辺の飲食店を検索する</button>
+    </div>
+    <div id="rest-results"></div>
+    <div class="rest-source" id="rest-source" style="display:none">データ出典: OpenStreetMap contributors (ODbL)</div>
+  </div>
+
+  <button class="main-btn" onclick="runFortune()">✨ 今この瞬間の運勢を占う ✨</button>
+  <div id="res-fortune"></div>
+</div>
+
+<!-- ===== TAB: GACHA ===== -->
+<div class="tc" id="tc-gacha">
+  <div class="scard">
+    <div class="sc-title">🎰 ガチャ占い — プレイ中ゲーム選択</div>
+    <div id="game-selector"></div>
+    <div class="fg" style="margin-top:12px"><label>本日の予算</label>
+      <select id="budget">
+        <option>無課金（石のみ）</option><option>少額（〜1,000円）</option>
+        <option>中程度（〜5,000円）</option><option>多め（〜10,000円）</option><option>天井狙い</option>
+      </select>
+    </div>
+  </div>
+  <button class="main-btn" onclick="runGacha()">🎰 今日のガチャ運を占う 🎰</button>
+  <div id="res-gacha"></div>
+</div>
+
+<!-- ===== TAB: DAILY ===== -->
+<div class="tc" id="tc-daily">
+  <div style="font-size:.76rem;color:var(--muted);text-align:center;margin-bottom:14px;line-height:1.7">
+    毎日変わる開運アニソン・フード・本・ラッキーアイテムを表示
+  </div>
+  <button class="main-btn" onclick="runDaily()">✨ 今日の開運情報を見る ✨</button>
+  <div id="res-daily"></div>
+</div>
+
+<!-- ===== TAB: CALENDAR ===== -->
+<div class="tc" id="tc-calendar">
+  <div class="rc c-cal">
+    <div class="ch"><div class="ci">📅</div><div><div class="ct">月間ラッキーカレンダー</div><div class="cs">日別運気 全占術計算</div></div></div>
+    <div class="cal-hdr">
+      <button class="cal-nav" onclick="chgCalMonth(-1)">◀</button>
+      <div class="cal-title" id="cal-mtitle">--</div>
+      <button class="cal-nav" onclick="chgCalMonth(1)">▶</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-legend">
+      <div class="cl-item"><div class="cl-dot" style="background:#FFD700"></div>最強吉日</div>
+      <div class="cl-item"><div class="cl-dot" style="background:rgba(201,168,76,.7)"></div>吉日</div>
+      <div class="cl-item"><div class="cl-dot" style="background:rgba(139,92,246,.5)"></div>普通</div>
+      <div class="cl-item"><div class="cl-dot" style="background:rgba(255,100,100,.4)"></div>注意</div>
+    </div>
+    <div class="cal-detail" id="cal-detail"></div>
+  </div>
+</div>
+
+<!-- ===== TAB: SETTINGS ===== -->
+<div class="tc" id="tc-settings">
+  <div class="scard">
+    <div class="sc-title">⚙️ プロフィール設定</div>
+    <div class="fg" style="margin-bottom:10px"><label>名前（任意）</label><input id="uname" value="大村晃平" placeholder="あなたの名前"></div>
+    <div class="fg" style="margin-bottom:10px"><label>九星</label>
+      <select id="kyusei">
+        <option>一白水星</option><option>二黒土星</option><option>三碧木星</option><option>四緑木星</option>
+        <option>五黄土星</option><option selected>六白金星</option><option>七赤金星</option><option>八白土星</option><option>九紫火星</option>
+      </select>
+    </div>
+    <div class="fr" style="margin-bottom:10px">
+      <div class="fg"><label>姓</label><input id="sei" value="大村"></div>
+      <div class="fg"><label>名</label><input id="mei" value="晃平"></div>
+    </div>
+    <div class="fg"><label>デフォルト場所</label><input id="defloc" value="宮崎市 イオンモール"></div>
+  </div>
+  <button class="main-btn" style="background:linear-gradient(135deg,#2D1B5E,#4A3080,#2D1B5E)" onclick="saveSettings()">設定を保存</button>
+  <div id="saved-msg" style="text-align:center;color:var(--green);font-size:.78rem;display:none">✅ 保存しました</div>
+</div>
+
+</div>
+<footer>Lucky Compass ✦ 全15種占術統合 ✦ APIキー不要 ✦ 完全無料</footer>
+
+<script>
+// =========================================
+//  LUCKY COMPASS — OFFLINE DIVINATION ENGINE
+//  完全オフライン動作 / APIキー不要
+// =========================================
+
+// ── Stars ──
+const SF = document.getElementById('sf');
+for(let i=0;i<140;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.4;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${Math.random()*3+2}s;--delay:${Math.random()*3}s`;SF.appendChild(s)}
+for(let i=0;i<4;i++){const s=document.createElement('div');s.className='shoot';s.style.cssText=`top:${Math.random()*40}%;left:0;--sd:${4+Math.random()*3}s;--ss:${i*3.5+Math.random()*4}s`;SF.appendChild(s)}
+
+// ── State ──
+let coords=null, locName='宮崎市 イオンモール';
+let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
+let selGames=new Set(['ウマ娘','ブルアカ','原神','崩壊：スターレイル','NIKKE']);
+
+// ── All games ──
+const GAMES=['ウマ娘','ブルアカ','原神','崩壊：スターレイル','NIKKE','鳴潮','グラブル',
+  'Fate/GO','プリコネR','アズールレーン','ヘブバン','白猫','崩壞3rd',
+  '無期迷途','センレスゾーンゼロ','アリスギア','スクスト2','チェンクロ',
+  '陰陽師','俺アラ','ディスガイアRPG','グラクロ','うたわれLF',
+  'まおりゅう','ドルウェブ','ぷよクエ','DQウォーク','PSO2es',
+  'このファン','けもフレ3','ロススト','Master Duel','Pokémon GO'];
+
+// ── Seeded random ──
+function sRand(seed){let x=Math.sin(seed+1)*73856;return x-Math.floor(x)}
+function sRandArr(seed,n){const r=[];for(let i=0;i<n;i++)r.push(sRand(seed*31+i*7919));return r}
+function dateSeed(d=new Date()){return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()}
+function userSeed(){
+  const bd=document.getElementById('bdate').value||'1993-04-14';
+  const parts=bd.split('-');
+  return (parseInt(parts[0])||1993)*10000+(parseInt(parts[1])||4)*100+(parseInt(parts[2])||14);
+}
+function combinedSeed(){return dateSeed()*1000+userSeed()%1000}
+
+// ── 六曜 ──
+const ROKUYO=['大安','赤口','先勝','友引','先負','仏滅'];
+const ROKUYODESC={大安:'万事に最吉の日',赤口:'正午のみ吉、他は凶',先勝:'午前吉、午後凶',友引:'引き合わせに吉',先負:'午前凶、午後吉',仏滅:'万事凶の日'};
+function getRokuyo(d=new Date()){const dy=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);return ROKUYO[(dy+3)%6]}
+
+// ── Datetime display ──
+function updateDT(){
+  const n=new Date();
+  const days=['日','月','火','水','木','金','土'];
+  document.getElementById('dt').textContent=`${n.getMonth()+1}/${n.getDate()}(${days[n.getDay()]}) ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('ry').textContent=getRokuyo(n);
+}
+updateDT(); setInterval(updateDT,30000);
+
+// ── Game selector init ──
+(function(){
+  const c=document.getElementById('game-selector');
+  GAMES.forEach(g=>{
+    const b=document.createElement('button');b.textContent=g;
+    const on=selGames.has(g);
+    b.style.cssText=`padding:4px 9px;border-radius:20px;font-size:.66rem;cursor:pointer;transition:all .2s;font-family:'Noto Serif JP',serif;border:1px solid ${on?'rgba(77,200,224,.4)':'rgba(255,255,255,.12)'};background:${on?'rgba(77,200,224,.2)':'rgba(255,255,255,.04)'};color:${on?'var(--cyan)':'var(--muted)'}`;
+    b.onclick=()=>{
+      if(selGames.has(g)){selGames.delete(g);b.style.background='rgba(255,255,255,.04)';b.style.color='var(--muted)';b.style.borderColor='rgba(255,255,255,.12)'}
+      else{selGames.add(g);b.style.background='rgba(77,200,224,.2)';b.style.color='var(--cyan)';b.style.borderColor='rgba(77,200,224,.4)'}
+    };
+    c.appendChild(b);
+  });
+})();
+
+// ── Tab switch ──
+function switchTab(id,btn){
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tc-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='calendar')renderCalendar();
+}
+
+// ── Location ──
+// ── Location helpers ──
+function setLocStatus(msg, color='var(--muted)') {
+  const el = document.getElementById('loc-status');
+  if (el) { el.textContent = msg; el.style.color = color; }
+}
+
+async function applyCoords(lat, lon, sourceName) {
+  coords = { lat, lon };
+  setLocStatus('📍 住所を解析中...', 'var(--gold)');
+  try {
+    const r = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ja`,
+      { headers: { 'Accept-Language': 'ja' }, signal: AbortSignal.timeout(8000) }
+    );
+    const d = await r.json();
+    const a = d.address || {};
+    locName = [a.city||a.town||a.village||a.county||'', a.suburb||a.neighbourhood||''].filter(Boolean).join('') || sourceName;
+  } catch {
+    locName = sourceName;
+  }
+  document.getElementById('loc').textContent = locName;
+  document.getElementById('situation').value = locName;
+  setLocStatus(`✅ ${locName} で設定しました`, 'var(--green)');
+  document.getElementById('loc-btn').textContent = '📡 GPS取得済み ✅';
+  document.getElementById('loc-btn').className = 'loc-btn ok';
+  showRestaurantSearch();
+  setTimeout(() => searchRestaurants(), 600);
+}
+
+function getLocation() {
+  const btn = document.getElementById('loc-btn');
+  setLocStatus('📡 位置情報を要求中...', 'var(--gold)');
+  btn.textContent = '📡 取得中...'; btn.disabled = true;
+
+  if (!navigator.geolocation) {
+    setLocStatus('⚠️ このブラウザはGPSに非対応です。手動入力をお使いください。', '#FF8080');
+    btn.textContent = '📡 GPSで現在地を自動取得'; btn.disabled = false; return;
+  }
+
+  // HTTPS チェック
+  if (location.protocol === 'file:') {
+    setLocStatus('⚠️ ローカルファイルではGPSが使えません。住所を手動入力してください。', '#FF8080');
+    btn.textContent = '📡 GPSで現在地を自動取得'; btn.disabled = false; return;
+  }
+
+  const timeout = setTimeout(() => {
+    setLocStatus('⏱️ GPSがタイムアウト。手動入力をお試しください。', '#FF8080');
+    btn.textContent = '📡 GPSで現在地を自動取得'; btn.disabled = false;
+  }, 12000);
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      clearTimeout(timeout);
+      btn.disabled = false;
+      await applyCoords(pos.coords.latitude, pos.coords.longitude,
+        `${pos.coords.latitude.toFixed(4)},${pos.coords.longitude.toFixed(4)}`);
+    },
+    (err) => {
+      clearTimeout(timeout);
+      btn.textContent = '📡 GPSで現在地を自動取得'; btn.disabled = false;
+      const msgs = {
+        1: '❌ 位置情報の許可が拒否されました。ブラウザの設定で許可するか、手動入力をお使いください。',
+        2: '❌ 位置情報を取得できませんでした。手動入力をお試しください。',
+        3: '⏱️ タイムアウトしました。手動入力をお試しください。'
+      };
+      setLocStatus(msgs[err.code] || '❌ GPS取得失敗。手動入力をお使いください。', '#FF8080');
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+  );
+}
+
+// 手動住所入力→Nominatim geocoding
+async function geocodeManual() {
+  const input = document.getElementById('manual-addr-input').value.trim();
+  if (!input) { setLocStatus('⚠️ 住所・施設名を入力してください', '#FF8080'); return; }
+
+  setLocStatus('🔍 住所を検索中...', 'var(--gold)');
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(input + ' 日本')}&format=json&limit=1&accept-language=ja`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
+    const data = await r.json();
+
+    if (!data || data.length === 0) {
+      setLocStatus('⚠️ 「' + input + '」が見つかりませんでした。別のキーワードを試してください。', '#FF8080');
+      return;
+    }
+
+    const place = data[0];
+    const lat = parseFloat(place.lat);
+    const lon = parseFloat(place.lon);
+    const displayName = place.display_name.split(',').slice(0,3).join(' ');
+    locName = input;
+    document.getElementById('situation').value = input;
+    await applyCoords(lat, lon, input);
+    setLocStatus(`✅ 「${displayName}」付近で設定しました`, 'var(--green)');
+
+  } catch (err) {
+    setLocStatus('❌ 住所検索に失敗しました。ネットワーク接続を確認してください。', '#FF8080');
+  }
+}
+
+function showErr(msg){const e=document.getElementById('errmsg');e.textContent=msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),4000)}
+
+// ============================================
+//  CORE DIVINATION ENGINE — 全15種占術
+// ============================================
+
+// 西洋占星術スコア（星座×日付）
+const ZODIAC_BASE={牡羊座:85,牡牛座:78,双子座:82,蟹座:76,獅子座:88,乙女座:80,天秤座:83,蠍座:79,射手座:86,山羊座:77,水瓶座:84,魚座:81};
+function westernScore(seed){const z=document.getElementById('zodiac').value;const base=ZODIAC_BASE[z]||80;return Math.min(99,Math.max(45,Math.round(base+(sRand(seed*3)-0.5)*30)))}
+
+// タロット
+const TAROT=[{n:'太陽',s:95,i:'☀️',msg:'明るい成功と喜び。積極的な行動が吉。'},{n:'星',s:85,i:'⭐',msg:'希望と理想。夢に向かって進む好機。'},{n:'運命の輪',s:80,i:'☸️',msg:'転換期。流れに乗って大きく飛躍。'},{n:'力',s:82,i:'🦁',msg:'内なる力が覚醒。粘り強さが実を結ぶ。'},{n:'魔術師',s:88,i:'🪄',msg:'才能全開。アイデアを即行動に移すべき日。'},{n:'女帝',s:86,i:'👑',msg:'豊かさと創造力。美と愛が引き寄せられる。'},{n:'世界',s:92,i:'🌍',msg:'完成と達成。大きな目標が実現する予兆。'},{n:'月',s:68,i:'🌙',msg:'直感を信じて。見えないものに注意。'},{n:'塔',s:55,i:'🗼',msg:'変化の予兆。固執を手放すと新たな道が。'},{n:'審判',s:75,i:'📯',msg:'再生と目覚め。過去を清算して前進。'},{n:'高等女司祭',s:83,i:'📜',msg:'智慧と神秘。内省することで答えを得る。'},{n:'皇帝',s:87,i:'⚔️',msg:'権威と安定。リーダーシップを発揮する日。'}];
+function tarotDraw(seed){return TAROT[Math.floor(sRand(seed*7)*TAROT.length)]}
+
+// 数秘術（命数計算）
+function calcNumerology(bdate){
+  const s=bdate.replace(/-/g,'').split('').reduce((a,c)=>a+parseInt(c),0);
+  let n=s;while(n>9&&n!==11&&n!==22&&n!==33){const ds=String(n).split('').map(Number);n=ds.reduce((a,b)=>a+b,0)}
+  return n;
+}
+const NUMER_MSG={1:'リーダーシップの日。決断と行動で運気UP。',2:'協調と直感の日。パートナーとの絆が強まる。',3:'創造と表現の日。アイデアと笑いが幸運を呼ぶ。',4:'安定と基盤の日。地道な努力が必ず報われる。',5:'変化と自由の日。新しい冒険に踏み出すとき。',6:'愛と調和の日。家族・仲間との絆が深まる。',7:'直感と探求の日。内省と学びで智慧が開花。',8:'力と豊かさの日。ビジネスと金運が絶好調。',9:'完成と慈愛の日。与えることで全てが返ってくる。',11:'直感の日。スピリチュアルな感受性が最大化。',22:'マスターの日。大きなビジョンを形にする力。',33:'奉仕の日。他者への愛と貢献が最大の幸運。'};
+function numerScore(seed,nm){const base={1:80,2:75,3:85,4:78,5:88,6:82,7:79,8:87,9:83,11:90,22:95,33:92};return Math.min(99,Math.max(45,Math.round((base[nm]||80)+(sRand(seed*11)-0.5)*20)))}
+
+// ルーン
+const RUNES=[{n:'フェフ',i:'ᚠ',mean:'富と繁栄',s:88},{n:'アンスズ',i:'ᚨ',mean:'知恵と伝達',s:82},{n:'ソウル',i:'ᛊ',mean:'勝利の太陽',s:90},{n:'ティール',i:'ᛏ',mean:'正義と勇気',s:78},{n:'ウル',i:'ᚢ',mean:'力と成長',s:85},{n:'ハガル',i:'ᚺ',mean:'変革と再生',s:65},{n:'ゲボ',i:'ᚷ',mean:'贈り物と絆',s:87},{n:'ナウズ',i:'ᚾ',mean:'制約の中の知恵',s:72},{n:'イング',i:'ᛜ',mean:'豊穣と完成',s:89},{n:'ラグズ',i:'ᛚ',mean:'流れと直感',s:80}];
+function runeDraw(seed){return RUNES[Math.floor(sRand(seed*13)*RUNES.length)]}
+
+// 九星気学
+const KYUSEI_LUCK={一白水星:[.7,.9,.65,.8,.85,.75,.7,.9,.6,.8,.85,.7],二黒土星:[.85,.7,.9,.65,.8,.85,.75,.7,.9,.6,.8,.85],三碧木星:[.8,.85,.7,.9,.65,.8,.85,.75,.7,.9,.6,.8],四緑木星:[.6,.8,.85,.7,.9,.65,.8,.85,.75,.7,.9,.6],五黄土星:[.9,.6,.8,.85,.7,.9,.65,.8,.85,.75,.7,.9],六白金星:[.85,.75,.7,.9,.6,.8,.85,.7,.9,.65,.8,.85],七赤金星:[.7,.9,.6,.8,.85,.75,.7,.9,.65,.8,.85,.7],八白土星:[.65,.8,.85,.75,.7,.9,.6,.8,.85,.7,.9,.65],九紫火星:[.75,.7,.9,.6,.8,.85,.75,.7,.9,.65,.8,.85]};
+function kyuseiScore(seed){
+  const ky=document.getElementById('kyusei')?.value||'六白金星';
+  const now=new Date(); const mIdx=now.getMonth();
+  const base=KYUSEI_LUCK[ky]?KYUSEI_LUCK[ky][mIdx]:0.8;
+  return Math.min(99,Math.max(45,Math.round(base*100+(sRand(seed*17)-0.5)*18)));
+}
+
+// 四柱推命
+const SHISHU_HEAVENLY=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const SHISHU_EARTHLY=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+function shichuScore(seed){return Math.min(99,Math.max(45,Math.round(76+(sRand(seed*19)-0.5)*26)))}
+function shichuMsg(seed){
+  const h=SHISHU_HEAVENLY[Math.floor(sRand(seed*23)*10)];
+  const e=SHISHU_EARTHLY[Math.floor(sRand(seed*29)*12)];
+  const msgs=[`${h}${e}の気が流れ、行動力が高まる日。`,`日主と本日の干支が調和し、知性と判断力が冴える。`,`天干と地支が相生し、金運と人間関係に好影響。`,`官星が輝く日。仕事面で良い評価を得られる予兆。`,`財星が活性化。予期せぬ収入や恩恵の可能性。`];
+  return msgs[Math.floor(sRand(seed*31)*msgs.length)];
+}
+
+// 紫微斗数
+const ZIWEI_STARS=['紫微星','天機星','太陽星','武曲星','天同星','廉貞星','天府星','太陰星','貪狼星','巨門星'];
+function ziweiScore(seed){return Math.min(99,Math.max(45,Math.round(74+(sRand(seed*37)-0.5)*24)))}
+function ziweiMsg(seed){const s=ZIWEI_STARS[Math.floor(sRand(seed*41)*ZIWEI_STARS.length)];const msgs=[`${s}が命宮に入り、個人的な運気が最大化。`,`${s}の影響で財帛宮が活性化。金運に注目。`,`${s}が遷移宮に鎮座し、良い変化が訪れる。`];return msgs[Math.floor(sRand(seed*43)*msgs.length)]}
+
+// 風水
+const FENGSHUI_DIR=['北','北東','東','南東','南','南西','西','北西'];
+const FENGSHUI_COLOR=['白','青','緑','黄','赤','橙','金','紫'];
+function fengshuiScore(seed){return Math.min(99,Math.max(45,Math.round(73+(sRand(seed*47)-0.5)*26)))}
+function fengshuiDir(seed){return FENGSHUI_DIR[Math.floor(sRand(seed*53)*8)]}
+function fengshuiMsg(seed,dir){return `${dir}の方位に開運エネルギーが集中。${FENGSHUI_COLOR[Math.floor(sRand(seed*59)*8)]}色のアイテムを身に着けると吉。`}
+
+// 0学占い（算命学ベース）
+function zeroScore(seed){return Math.min(99,Math.max(45,Math.round(71+(sRand(seed*61)-0.5)*28)))}
+
+// 姓名判断
+function seimeiScore(){
+  const sei=document.getElementById('sei')?.value||'大村';
+  const mei=document.getElementById('mei')?.value||'晃平';
+  // 簡略版：文字数×平方でスコア算出
+  const strokes=sei.length*7+mei.length*5;
+  const base=60+((strokes%40));
+  return Math.min(99,Math.max(50,base));
+}
+
+// 血液型
+const BLOOD_DAILY={A型:{msg:'几帳面な本領発揮の日。計画通りに進めると吉。',base:78},B型:{msg:'自由な発想力が炸裂する日。直感を信じて動こう。',base:84},O型:{msg:'大らかなエネルギーが周りを動かす日。リーダーシップ◎',base:82},AB型:{msg:'二面性が好転する日。柔軟な判断が最大の武器。',base:86}};
+function bloodScore(seed){const b=document.getElementById('blood').value;const base=BLOOD_DAILY[b]?.base||80;return Math.min(99,Math.max(45,Math.round(base+(sRand(seed*67)-0.5)*22)))}
+
+// 算命学
+function sanmeiScore(seed){return Math.min(99,Math.max(45,Math.round(75+(sRand(seed*71)-0.5)*24)))}
+
+// 六曜スコア
+const ROKUYO_SCORE={大安:92,赤口:45,先勝:70,友引:75,先負:62,仏滅:38};
+function rokuyoScore(){return ROKUYO_SCORE[getRokuyo()]||65}
+
+// おみくじ
+const OMIKUJI=[{r:'大吉',w:14,col:'#FFD700'},{r:'中吉',w:26,col:'var(--gold)'},{r:'小吉',w:22,col:'#90EE90'},{r:'吉',w:20,col:'#87CEEB'},{r:'末吉',w:11,col:'#DDA0DD'},{r:'凶',w:5,col:'#FF8080'},{r:'大凶',w:2,col:'#FF4444'}];
+const OMIKUJI_MSG={大吉:'万事に最高の運が巡ります。大きな決断・行動・ガチャ全てに吉！',中吉:'全体的に良い流れ。自信を持って進めて下さい。',小吉:'小さな幸せが積み重なる日。着実に前進を。',吉:'良い日です。日常を丁寧に。',末吉:'後半から運気上昇。午後以降の行動が吉。',凶:'今日は慎重に。ガチャは明日以降推奨。',大凶:'万事控えめに。神社参拝でお祓いを。'};
+function drawOmikuji(seed){
+  let r=sRand(seed*73)*100,cum=0;
+  for(const o of OMIKUJI){cum+=o.w;if(r<cum)return o}
+  return OMIKUJI[0];
+}
+
+// ── 総合スコア計算 ──
+function computeAll(){
+  const seed=combinedSeed();const now=new Date();
+  const ws=westernScore(seed);
+  const tarot=tarotDraw(seed);
+  const bdate=document.getElementById('bdate').value||'1993-04-14';
+  const nm=calcNumerology(bdate);
+  const ns=numerScore(seed,nm);
+  const rune=runeDraw(seed);
+  const ks=kyuseiScore(seed);
+  const ss=shichuScore(seed);
+  const zs=ziweiScore(seed);
+  const fs=fengshuiScore(seed);
+  const fdir=fengshuiDir(seed);
+  const zeros=zeroScore(seed);
+  const seimeis=seimeiScore();
+  const bs=bloodScore(seed);
+  const sms=sanmeiScore(seed);
+  const rs=rokuyoScore();
+  const omi=drawOmikuji(seed);
+
+  const scores=[ws,tarot.s,ns,rune.s,ks,ss,zs,fs,zeros,seimeis,bs,sms,rs];
+  const total=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+
+  // Lucky hours
+  const hourBases=[38,32,52,82,79,72,88,91,75,92,85,52];
+  const hours=hourBases.map((b,i)=>{
+    const sc=Math.min(99,Math.max(30,Math.round(b+(sRand(seed*79+i*83)-0.5)*18)));
+    return {time:`${String(i*2).padStart(2,'0')}:00-${String(i*2+2).padStart(2,'0')}:00`,score:sc};
+  }).sort((a,b)=>b.score-a.score);
+
+  // Lucky places (location-aware)
+  const loc=document.getElementById('situation').value||locName||'宮崎市';
+  const placeTypes=[
+    {cat:'神社・寺',spots:`${loc}周辺の神社・寺院`,reason:'九星気学の吉方位と重なる聖域。参拝で運気が浄化されます。',dir:fdir},
+    {cat:'自然・公園',spots:`${loc}周辺の公園・緑地`,reason:`${tarot.n}のカードが示す「自然のエネルギー」と共鳴する場所。`,dir:FENGSHUI_DIR[(FENGSHUI_DIR.indexOf(fdir)+2)%8]},
+    {cat:'カフェ・飲食',spots:`${loc}周辺の飲食店・カフェ`,reason:'風水の水の気が流れ、人との縁と金運が高まるエリア。',dir:FENGSHUI_DIR[(FENGSHUI_DIR.indexOf(fdir)+4)%8]},
+  ];
+
+  // Lucky foods
+  const bloodFoods={B型:[{n:'うどん・そば',c:'白',t:'ランチ',s:'うどん屋・蕎麦屋',r:'白い食材が六白金星の金気を高め、集中力が持続。'},{n:'鶏料理',c:'黄',t:'夕食',s:'焼き鳥・鶏料理店',r:'干支・酉（鶏）を取り込むことで本来の力が覚醒。'},{n:'いちご系スイーツ',c:'赤',t:'おやつ',s:'カフェ・スイーツ店',r:'赤い食材が牡羊座の火のエネルギーを補給。'}]};
+  const zodiac=document.getElementById('zodiac').value;
+  const foods=bloodFoods[document.getElementById('blood').value]||bloodFoods['B型'];
+
+  // Verdict
+  const verdicts=[
+    {min:90,v:'大吉 ✦ 最強の開運日！',col:'#FFD700'},
+    {min:80,v:'中吉 ✦ 運気上昇中',col:'var(--gold-light)'},
+    {min:70,v:'吉 ✦ 良い流れの日',col:var_green()},
+    {min:60,v:'小吉 ✦ 着実に前進',col:'#87CEEB'},
+    {min:0,v:'末吉 ✦ 慎重な一日を',col:'var(--muted)'}
+  ];
+  const verdict=verdicts.find(v=>total>=v.min)||verdicts[verdicts.length-1];
+
+  return{total,verdict,ws,tarot,nm,ns,rune,ks,ss,ssMsg:shichuMsg(seed),zs,zsMsg:ziweiMsg(seed),fs,fdir,fsMsg:fengshuiMsg(seed,fdir),zeros,seimeis,bs,sms,rs,omi,hours,places:placeTypes,foods,seed,nm,now};
+}
+function var_green(){return '#50C878'}
+
+// ── Render: Fortune ──
+function runFortune(){
+  const d=computeAll();
+  const scoreColor=s=>s>=90?'#FFD700':s>=80?'var(--gold-light)':s>=70?'var(--green)':s>=60?'#87CEEB':'var(--muted)';
+  const stars=s=>'★'.repeat(Math.round(s/20))+'☆'.repeat(5-Math.round(s/20));
+  const topHours=d.hours.slice(0,4);
+  const situation=document.getElementById('situation').value||locName;
+
+  // Divination messages
+  const divs=[
+    {n:'西洋占星術',s:d.ws,msg:`${document.getElementById('zodiac').value}：今日は月の位置が火星と調和。${d.tarot.msg}`},
+    {n:'タロット',s:d.tarot.s,msg:`「${d.tarot.n}」${d.tarot.i} — ${d.tarot.msg}`},
+    {n:'数秘術',s:d.ns,msg:`命数${d.nm}：${NUMER_MSG[d.nm]||'変化と成長の数。今日を大切に。'}`},
+    {n:'ルーン',s:d.rune.s,msg:`${d.rune.i}${d.rune.n}（${d.rune.mean}）— 今日のキーワードは「${d.rune.mean}」。`},
+    {n:'九星気学',s:d.ks,msg:`${document.getElementById('kyusei')?.value||'六白金星'}：今月の気の流れとの相性から運勢を鑑定。`},
+    {n:'四柱推命',s:d.ss,msg:d.ssMsg},
+    {n:'紫微斗数',s:d.zs,msg:d.zsMsg},
+    {n:'風水',s:d.fs,msg:d.fsMsg},
+    {n:'血液型占い',s:d.bs,msg:`${document.getElementById('blood').value}：${BLOOD_DAILY[document.getElementById('blood').value]?.msg||'本来の力が発揮される日。'}`},
+    {n:'六曜',s:d.rs,msg:`${getRokuyo()}：${ROKUYODESC[getRokuyo()]||''}`},
+  ];
+
+  const circumference=2*Math.PI*54;
+  const dash=circumference*(d.total/100);
+  const gap=circumference-dash;
+
+  let html=`
+  <div class="score-wrap">
+    <div class="score-ring">
+      <svg viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="54" stroke="rgba(201,168,76,.15)" stroke-width="10" fill="none"/>
+        <circle cx="60" cy="60" r="54" stroke="url(#sg)" stroke-width="10" fill="none"
+          stroke-dasharray="${dash} ${gap}" stroke-linecap="round"/>
+        <defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#7B5EA7"/><stop offset="100%" stop-color="#d4af37"/>
+        </linearGradient></defs>
+      </svg>
+      <div class="score-inner">
+        <div class="score-num">${d.total}</div>
+        <div class="score-lbl">LUCKY</div>
+      </div>
+    </div>
+    <div class="verdict" style="color:${d.verdict.col}">${d.verdict.v}</div>
+    <div style="font-size:.7rem;color:var(--muted)">${new Date().getMonth()+1}月${new Date().getDate()}日 ✦ ${situation} ✦ ${getRokuyo()}</div>
+  </div>
+
+  <div class="rc c-time">
+    <div class="ch"><div class="ci">⏰</div><div><div class="ct">ラッキータイム</div><div class="cs">運気ピーク時間帯 TOP4</div></div></div>
+    <div class="tgrid">${topHours.map(h=>`
+      <div class="titem">
+        <div class="trange">${h.time}</div>
+        <div class="tscore" style="color:${scoreColor(h.score)}">${h.score}点</div>
+        <div class="tlabel">${h.score>=90?'🌟最強ピーク':h.score>=80?'✦ 吉時間':h.score>=70?'◎ 良好':'△ 普通'}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="rc c-place" id="lucky-spot-card">
+    <div class="ch"><div class="ci">📍</div><div><div class="ct">ラッキースポット</div><div class="cs" id="spot-card-sub">周辺の開運スポットを検索中...</div></div></div>
+    <div id="lucky-spot-results">
+      <div class="spot-loading">✨ 周辺スポットを取得中...</div>
+    </div>
+  </div>
+
+  <div class="rc c-food">
+    <div class="ch"><div class="ci">🍽️</div><div><div class="ct">ラッキーフード</div><div class="cs">運気UP食材 TOP3</div></div></div>
+    ${d.foods.map((f,i)=>`
+    <div class="fi">
+      <div class="fr2">🍀 第${i+1}位 | ${f.c}の食べ物 | ${f.t}</div>
+      <div class="pn">${f.n}</div>
+      <div class="ps">🏪 ${f.s}</div>
+      <div class="pd">${f.r}</div>
+    </div>`).join('')}
+  </div>
+
+  <div class="rc c-div">
+    <div class="ch"><div class="ci">🔮</div><div><div class="ct">占術別詳細</div><div class="cs">全占術スコア & メッセージ</div></div></div>
+    ${divs.map(d=>`
+    <div class="pbar-wrap">
+      <div class="pbar-hdr"><span class="pbar-name">✦ ${d.n}</span><span class="pbar-score">${d.s}pt</span></div>
+      <div class="pbar"><div class="pbar-fill" style="width:${d.s}%"></div></div>
+      <div style="font-size:.73rem;color:var(--muted);margin-top:4px;line-height:1.6">${d.msg}</div>
+    </div>`).join('')}
+  </div>
+
+  <div class="rc" style="background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(45,27,94,.3))">
+    <div class="ch"><div class="ci">📿</div><div><div class="ct">おみくじ</div></div></div>
+    <div style="text-align:center;padding:10px 0">
+      <div style="font-family:'Zen Old Mincho',serif;font-size:2.2rem;color:${d.omi.col};filter:drop-shadow(0 0 12px ${d.omi.col})">${d.omi.r}</div>
+      <div style="font-size:.82rem;color:var(--text);margin-top:10px;line-height:1.8">${OMIKUJI_MSG[d.omi.r]||''}</div>
+    </div>
+  </div>
+
+  <div class="li-grid">
+    <div class="li-item"><div class="li-icon">🎨</div><div><div class="li-cat">ラッキーカラー</div><div class="li-name">${getLuckyColor(d.seed)}</div></div></div>
+    <div class="li-item"><div class="li-icon">🔢</div><div><div class="li-cat">ラッキーナンバー</div><div class="li-name">${getLuckyNumbers(d.seed)}</div></div></div>
+    <div class="li-item"><div class="li-icon">💎</div><div><div class="li-cat">ラッキーストーン</div><div class="li-name">${getLuckyStone(d.seed)}</div></div></div>
+    <div class="li-item"><div class="li-icon">🌿</div><div><div class="li-cat">ラッキーアイテム</div><div class="li-name">${getLuckyItem(d.seed)}</div></div></div>
+  </div>`;
+
+  const div=document.getElementById('res-fortune');div.innerHTML=html;
+  div.scrollIntoView({behavior:'smooth',block:'start'});
+
+  // ラッキースポット取得（非同期）
+  fetchLuckySpots(d.seed, d.fdir);
+}
+
+// ── Lucky extras ──
+const COLORS=['ゴールド','シルバー','ロイヤルブルー','ルビーレッド','エメラルド','パープル','ローズゴールド','コバルト','アイボリー','ティール'];
+const STONES=['ルビー','アメジスト','シトリン','アクアマリン','ラピスラズリ','ローズクォーツ','タイガーアイ','エメラルド','ガーネット','ムーンストーン'];
+const ITEMS=['水晶球','羽根のアクセサリー','金色のコイン','天然石','白い花','鈴','御守り','四つ葉のクローバー','竹炭','ドライフラワー'];
+function getLuckyColor(s){return COLORS[Math.floor(sRand(s*89)*COLORS.length)]}
+function getLuckyNumbers(s){const r=sRandArr(s*97,3);return r.map(x=>Math.floor(x*44)+1).join(' · ')}
+function getLuckyStone(s){return STONES[Math.floor(sRand(s*101)*STONES.length)]}
+function getLuckyItem(s){return ITEMS[Math.floor(sRand(s*103)*ITEMS.length)]}
+
+// ── Render: Gacha ──
+const GACHA_LUCKY={
+  ウマ娘:{base:.95,reason:'干支・酉（馬）×牡羊座の勢いが絶好調。'},
+  ブルアカ:{base:.92,reason:'学園エネルギーが今日の知性運と共鳴。'},
+  '崩壊：スターレイル':{base:.90,reason:'宇宙の流れ×六白金星の金気が吉。'},
+  NIKKE:{base:.88,reason:'勝負運が最高潮の日。戦闘系ゲームに追い風。'},
+  原神:{base:.87,reason:'風・水の元素が今日の気の流れと調和。'},
+  鳴潮:{base:.85,reason:'音波共鳴×今日の波動が一致。'},
+  '無期迷途':{base:.83,reason:'砂漠の旅人×西方位の吉気が後押し。'},
+  グラブル:{base:.82,reason:'空の騎空士×今日の風向きが最高。'},
+  'Fate/GO':{base:.80,reason:'英霊×牡羊座の勇気エネルギー全開。'},
+  プリコネR:{base:.79,reason:'プリンセス×今日の花運が開花。'},
+  アズールレーン:{base:.77,reason:'海軍×南方吉位で勝利の予感。'},
+  ヘブバン:{base:.76,reason:'天使×今日の浄化エネルギー。'},
+  白猫:{base:.75,reason:'勇者×木の気が今日の運気を後押し。'},
+  '崩壞3rd':{base:.74,reason:'神女×宇宙エネルギーが共鳴。'},
+  センレスゾーンゼロ:{base:.79,reason:'都市の気×今日の電気的エネルギー。'},
+  アリスギア:{base:.73,reason:'機械×金の気との相性良好。'},
+  スクスト2:{base:.72,reason:'少女×今日の縁結びエネルギー。'},
+  チェンクロ:{base:.78,reason:'勇者の旅×今日の挑戦運。'},
+  陰陽師:{base:.80,reason:'東洋霊力×四柱推命の今日の吉柱。'},
+  俺アラ:{base:.82,reason:'レベルアップ×今日の成長エネルギー最大。'},
+  ディスガイアRPG:{base:.71,reason:'魔界×今日のカオスエネルギーが共鳴。'},
+  グラクロ:{base:.77,reason:'聖騎士×今日の正義の運気。'},
+  うたわれLF:{base:.75,reason:'和風霊力×干支の気との調和。'},
+  まおりゅう:{base:.74,reason:'魔王×今日の覇気エネルギー。'},
+  ドルウェブ:{base:.73,reason:'光×今日の輝きのエネルギー。'},
+  ぷよクエ:{base:.76,reason:'パズル×今日の創造的思考。'},
+  DQウォーク:{base:.78,reason:'勇者の歩み×今日の冒険運。'},
+  PSO2es:{base:.72,reason:'サイエンス×金の気との相性。'},
+  このファン:{base:.74,reason:'ファンタジー×今日の夢運。'},
+  けもフレ3:{base:.71,reason:'動物の友×今日の自然エネルギー。'},
+  ロススト:{base:.75,reason:'失われた星×今日の再発見の気。'},
+  'Master Duel':{base:.80,reason:'カードゲーム×今日の知略運最高。'},
+  'Pokémon GO':{base:.77,reason:'ポケモン×今日の冒険・探索エネルギー。'},
+};
+const PULL_ROUTINES=[
+  '北を向いて深呼吸3回 → 左手でスマホを持つ → 「光よ来たれ」と心の中で唱える',
+  '水を一口飲んでから → 目を閉じて10秒集中 → 右手人差し指で引く',
+  'スマホを額に当て3秒 → 感謝の気持ちを込めて → そっと画面をタップ',
+  '東の方角を向き → 深呼吸2回 → 笑顔で引く（表情が運気を決める）',
+];
+
+function runGacha(){
+  const seed=combinedSeed();const games=Array.from(selGames);
+  if(games.length===0){showErr('ゲームを1つ以上選択してください');return}
+  const ranked=games.map((g,i)=>{
+    const info=GACHA_LUCKY[g]||{base:.7,reason:'今日の運気と共鳴しています。'};
+    const sc=Math.min(99,Math.max(30,Math.round(info.base*100+(sRand(seed*107+i*113)-0.5)*20)));
+    return{game:g,score:sc,reason:info.reason,stars:Math.round(sc/20)};
+  }).sort((a,b)=>b.score-a.score);
+
+  const top=ranked.slice(0,5);const worst=ranked[ranked.length-1];
+  const routine=PULL_ROUTINES[Math.floor(sRand(seed*127)*PULL_ROUTINES.length)];
+  const bestTime=document.getElementById('res-fortune').querySelector('.trange')?.textContent||'14:00-16:00';
+  const budget=document.getElementById('budget').value;
+
+  const getPull=(sc,i)=>{
+    if(i===0&&sc>=85)return{t:'10連推奨',c:'rec'};
+    if(sc>=75)return{t:'単発可',c:''};
+    if(sc>=60)return{t:'様子見',c:''};
+    return{t:'見送り推奨',c:'ng'};
+  };
+
+  const d=computeAll();
+  const gachaMsg=`${new Date().getMonth()+1}月${new Date().getDate()}日のガチャ総合運：${d.total>=80?'絶好調！積極的に引きましょう':d.total>=70?'良好。吉時間帯を狙えば◎':d.total>=60?'普通。無理な連続引きは控えめに':'やや控えめ。石は温存がおすすめ'}。予算「${budget}」での運用が最適。`;
+
+  let html=`
+  <div class="c-msg">${gachaMsg}</div>
+  <div class="rc c-gacha">
+    <div class="ch"><div class="ci">🎰</div><div><div class="ct">本日のガチャランキング</div><div class="cs">引くべきゲーム TOP${Math.min(5,top.length)}</div></div></div>
+    ${top.map((g,i)=>{const pull=getPull(g.score,i);return`
+    <div class="gi ${i===0?'t1':i===1?'t2':i===2?'t3':''}">
+      <div class="grb ${i===0?'b1':i===1?'b2':i===2?'b3':'bn'}">${g.stars===5?'👑':g.rank||i+1}</div>
+      <div class="ginfo">
+        <div class="gname">${i+1}. ${g.game}</div>
+        <div class="greason">${g.reason}</div>
+        <div style="font-size:.66rem;color:var(--gold);margin-top:2px">スコア：${g.score}pt ${'★'.repeat(g.stars)+'☆'.repeat(5-g.stars)}</div>
+      </div>
+      <div class="gpull ${pull.c}">${pull.t}</div>
+    </div>`}).join('')}
+  </div>
+  <div class="rc" style="background:linear-gradient(135deg,rgba(255,100,100,.08),rgba(7,4,15,.8))">
+    <div class="ch"><div class="ci">⚠️</div><div><div class="ct" style="color:#FF8080">今日は見送り推奨</div></div></div>
+    <div style="font-size:.88rem;font-weight:700;margin-bottom:4px">${worst.game}</div>
+    <div style="font-size:.75rem;color:var(--muted)">今日の運気との相性が最も低い（スコア：${worst.score}pt）</div>
+  </div>
+  <div class="rc c-div">
+    <div class="ch"><div class="ci">✨</div><div><div class="ct">今日のガチャ前ルーティン</div></div></div>
+    <div style="font-size:.85rem;line-height:1.9">${routine}</div>
+  </div>`;
+
+  const div=document.getElementById('res-gacha');div.innerHTML=html;
+  div.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── Render: Daily ──
+const ANISONGS=[
+  {t:'DREAM SOLISTER',ar:'TRUE',an:'響け！ユーフォニアム',r:'麗奈の情熱が今日のあなたの運気を後押しします。',e:'情熱と誠実さのエネルギー'},
+  {t:'oath sign',ar:'LiSA',an:'Fate/Zero',r:'契約の時。今日の高い勝負運にふさわしい一曲。',e:'決意と覚悟のエネルギー'},
+  {t:'Connect',ar:'ClariS',an:'魔法少女まどか☆マギカ',r:'絆のエネルギーが出会い運を高めます。',e:'絆と希望のエネルギー'},
+  {t:'シュガーソングとビターステップ',ar:'UNISON SQUARE GARDEN',an:'血界戦線',r:'疾走感が六白金星の活力を刺激する日に最適。',e:'躍動と自由のエネルギー'},
+  {t:'ブルーバード',ar:'いきものがかり',an:'NARUTO',r:'B型の自由魂が羽ばたく日にぴったりの一曲。',e:'自由と飛翔のエネルギー'},
+  {t:'残酷な天使のテーゼ',ar:'高橋洋子',an:'エヴァンゲリオン',r:'使命感が高まる日。自分の可能性を信じて。',e:'使命と再生のエネルギー'},
+  {t:'ようこそジャパリパークへ',ar:'どうぶつビスケッツ×PPP',an:'けものフレンズ',r:'仲間との絆が運気を押し上げる今日に。',e:'友情と笑顔のエネルギー'},
+  {t:'crossing field',ar:'LiSA',an:'SAO',r:'新しい世界への扉が開く予兆。高い運気に合わせて。',e:'挑戦と前進のエネルギー'},
+  {t:'ハート形の軌跡',ar:'山崎あおい',an:'響け！ユーフォニアム3',r:'麗奈の世界。純粋な心が最大の開運ツール。',e:'純粋な愛と誠実のエネルギー'},
+  {t:'廻廻奇譚',ar:'Eve',an:'呪術廻戦',r:'強さと覚悟の日。牡羊座の火を燃やして。',e:'強さと覚悟のエネルギー'},
+  {t:'六兆年と一夜物語',ar:'鏡音リン',an:'（ボカロ）',r:'想いを貫く力が今日の数秘術と共鳴。',e:'純愛と情熱のエネルギー'},
+  {t:'ヒカリアレ',ar:'BURNOUT SYNDROMES',an:'ハイキュー!!',r:'諦めない心が今日の勝負運を最大化。',e:'諦めない情熱エネルギー'},
+  {t:'only my railgun',ar:'fripSide',an:'とある科学の超電磁砲',r:'力強い電気的エネルギーが今日の運気を底上げ。',e:'電気的パワーエネルギー'},
+  {t:'紅蓮華',ar:'LiSA',an:'鬼滅の刃',r:'鬼滅の強さ×牡羊座の火のエレメントが完全一致。',e:'炎と再生のエネルギー'},
+  {t:'ギルティビューティ',ar:'Liyuu',an:'ラブライブ！スーパースター!!',r:'輝く美しさが今日の出会い運を高める。',e:'輝きと美のエネルギー'},
+];
+const FOODS=[
+  {n:'丸亀製麺のぶっかけうどん',e:'🍜',s:'フードコート（うどん）',r:'白い食材が六白金星の金気を高め、午後の集中力を持続させます。',li:'だし'},
+  {n:'宮崎地鶏の炙り丼',e:'🍗',s:'宮崎地鶏専門店',r:'干支・酉（鶏）を食べることで本来の力が覚醒。地元パワーも加算。',li:'鶏肉'},
+  {n:'スパイシーカレーライス',e:'🍛',s:'カレー店',r:'牡羊座・火のエレメントとスパイスが共鳴。情熱エネルギーを補給。',li:'スパイス'},
+  {n:'だし巻き玉子定食',e:'🥚',s:'定食屋・和食店',r:'黄色い食材が数秘4の今日の金運を引き寄せます。',li:'玉子'},
+  {n:'いちごクレープ',e:'🍓',s:'クレープ店・カフェ',r:'赤いフルーツが牡羊座の火を補給。出会い運もUP！',li:'いちご'},
+  {n:'鮭のちゃんちゃん焼き定食',e:'🐟',s:'魚介・定食屋',r:'水の気が九星気学の今日の吉気と調和。健康運も上昇。',li:'鮭'},
+  {n:'担々麺',e:'🍜',s:'中華料理店',r:'辛さが火のエネルギーを活性化。B型の直感力が最大化。',li:'ごま'},
+];
+const BOOKS=[
+  {t:'影響力の武器',a:'ロバート・B・チャルディーニ',g:'心理学・マーケティング',sk:'発信力・傾聴力',r:'販売8年のプロとして、説得の心理を体系的に学ぶ一冊。顧客対応が格段にレベルアップ。'},
+  {t:'FACTFULNESS',a:'ハンス・ロスリング',g:'教養・データサイエンス',sk:'課題発見力・情報分析',r:'世界を正確に見る10の思考習慣。統計的思考と課題発見力が同時に伸びます。'},
+  {t:'嫌われる勇気',a:'岸見一郎・古賀史健',g:'心理学・哲学',sk:'ストレスコントロール・自己表現',r:'異動の多い人生に、アドラー心理学が新たな視点を与える。転職・独立を考えるあなたに。'},
+  {t:'多動力',a:'堀江貴文',g:'ビジネス・自己啓発',sk:'行動力・創造力',r:'転職・独立を迷うあなたへ。牡羊座の行動力をさらに解放する刺激的な一冊。'},
+  {t:'ゼロ秒思考',a:'赤羽雄二',g:'思考法・ビジネス',sk:'実行力・計画力',r:'メモ書き1分×10枚で思考が整理される。Apple販売のプレゼン力も格段に向上。'},
+  {t:'夢をかなえるゾウ',a:'水野敬也',g:'小説・自己啓発',sk:'主体性・向上心',r:'面白くて実践的。酉年B型の行動パターンと一致する成長法則が詰まっています。'},
+  {t:'ブルーピリオド',a:'山口つばさ',g:'マンガ・芸術',sk:'創造力・自己表現',r:'「好きなことを仕事にする覚悟」を問う作品。転職・独立の迷いに答えを与えてくれる。'},
+];
+
+function runDaily(){
+  const seed=combinedSeed();
+  const song=ANISONGS[Math.floor(sRand(seed*131)*ANISONGS.length)];
+  const food=FOODS[Math.floor(sRand(seed*137)*FOODS.length)];
+  const book=BOOKS[Math.floor(sRand(seed*139)*BOOKS.length)];
+  const d=computeAll();
+  const mantras=['今日の私は無限の可能性を持っている','運気の波に乗り、全てを引き寄せる','ありがとうが奇跡を呼ぶ','私は今日も輝いている','すべては最善の方向に向かっている'];
+  const mantra=mantras[Math.floor(sRand(seed*141)*mantras.length)];
+
+  let html=`
+  <div style="text-align:center;padding:16px;margin-bottom:14px;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(139,92,246,.08));border:1px solid rgba(201,168,76,.2);border-radius:14px">
+    <div style="font-family:'Zen Old Mincho',serif;font-size:1.05rem;color:var(--gold-light);letter-spacing:.08em;margin-bottom:5px">"${mantra}"</div>
+    <div style="font-size:.66rem;color:var(--muted)">今日の開運マントラ</div>
+  </div>
+
+  <div class="rc c-daily">
+    <div class="ch"><div class="ci">🎵</div><div><div class="ct">今日のアニソン</div><div class="cs">運気が上がる一曲</div></div></div>
+    <div class="ditem">
+      <div class="demoji">🎶</div>
+      <div>
+        <div class="dlabel">TODAY'S ANISONG</div>
+        <div class="dtitle">「${song.t}」</div>
+        <div class="dsub">${song.ar} / ${song.an}</div>
+        <div class="dreason">${song.r}</div>
+        <div style="font-size:.66rem;color:var(--gold);margin-top:3px">エネルギー: ${song.e}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rc c-food">
+    <div class="ch"><div class="ci">🍜</div><div><div class="ct">今日のラッキーフード</div><div class="cs">開運食材を摂取しよう</div></div></div>
+    <div class="ditem">
+      <div class="demoji">${food.e}</div>
+      <div>
+        <div class="dlabel">TODAY'S FOOD</div>
+        <div class="dtitle">${food.n}</div>
+        <div class="dsub">${food.s} | ラッキー食材：${food.li}</div>
+        <div class="dreason">${food.r}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rc" style="background:linear-gradient(135deg,rgba(80,200,120,.1),rgba(7,4,15,.8))">
+    <div class="ch"><div class="ci">📚</div><div><div class="ct">今週のおすすめ本</div><div class="cs">伸びるスキル：${book.sk}</div></div></div>
+    <div class="ditem">
+      <div class="demoji">📖</div>
+      <div>
+        <div class="dlabel">THIS WEEK'S BOOK</div>
+        <div class="dtitle">『${book.t}』</div>
+        <div class="dsub">著：${book.a} | ${book.g}</div>
+        <div class="dreason">${book.r}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rc c-time">
+    <div class="ch"><div class="ci">🎨</div><div><div class="ct">今日のラッキーカラー & ナンバー</div></div></div>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:42px;height:42px;border-radius:50%;background:${getColorHex(seed)};border:2px solid rgba(255,255,255,.2)"></div>
+        <div>
+          <div style="font-size:.8rem;font-weight:700">${getLuckyColor(seed)}</div>
+          <div style="font-size:.66rem;color:var(--muted)">今日のラッキーカラー</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.66rem;color:var(--muted);margin-bottom:3px">ラッキーナンバー</div>
+        <div style="font-size:1.25rem;font-weight:900;color:var(--gold);letter-spacing:.2em">${getLuckyNumbers(seed)}</div>
+      </div>
+      <div>
+        <div style="font-size:.66rem;color:var(--muted);margin-bottom:3px">ラッキーストーン</div>
+        <div style="font-size:.88rem;font-weight:700">${getLuckyStone(seed)}</div>
+      </div>
+    </div>
+  </div>`;
+
+  const div=document.getElementById('res-daily');div.innerHTML=html;
+  div.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+const COLOR_HEX={'ゴールド':'#D4AF37','シルバー':'#C0C0C0','ロイヤルブルー':'#4169E1','ルビーレッド':'#9B111E','エメラルド':'#50C878','パープル':'#8B5CF6','ローズゴールド':'#B76E79','コバルト':'#0047AB','アイボリー':'#FFFFF0','ティール':'#4DC8E0'};
+function getColorHex(s){const c=getLuckyColor(s);return COLOR_HEX[c]||'#D4AF37'}
+
+// ── Calendar ──
+function getDayLuck(y,m,d){
+  const seed=y*10000+m*100+d+userSeed()%999;
+  const r=sRand(seed);
+  if(r>.92)return 5;if(r>.76)return 4;if(r>.46)return 3;if(r>.26)return 2;return 1;
+}
+function renderCalendar(){
+  const months=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  document.getElementById('cal-mtitle').textContent=`${calYear}年 ${months[calMonth]}`;
+  const grid=document.getElementById('cal-grid');grid.innerHTML='';
+  ['日','月','火','水','木','金','土'].forEach(d=>{const h=document.createElement('div');h.className='cdh';h.textContent=d;grid.appendChild(h)});
+  const first=new Date(calYear,calMonth,1).getDay();
+  const days=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  for(let i=0;i<first;i++){const e=document.createElement('div');e.className='cd om';grid.appendChild(e)}
+  for(let d=1;d<=days;d++){
+    const e=document.createElement('div');
+    const l=getDayLuck(calYear,calMonth+1,d);
+    e.className=`cd l${l}`;
+    if(calYear===today.getFullYear()&&calMonth===today.getMonth()&&d===today.getDate())e.classList.add('today');
+    e.innerHTML=`<span>${d}</span>${l>=4?'<span class="cd-star">⭐</span>':''}`;
+    e.onclick=()=>showCalDetail(d,l);grid.appendChild(e);
+  }
+}
+const LUCK_LABELS={5:'⭐ 最強吉日',4:'✦ 吉日',3:'◎ 普通日',2:'△ やや注意',1:'✗ 注意日'};
+const LUCK_TEXTS={5:'全占術が最大に整う特別な日。大切な決断・ガチャ10連・告白など重要な行動に最適。六白金星×牡羊座のパワーが炸裂！',4:'運気が高まる吉日。積極的な行動をとると良い結果が。ガチャ単発引きも好調。仕事・恋愛ともに前進を。',3:'エネルギーが平衡する普通の日。無理せず着実に進むのが吉。日常のルーティンを大切に。',2:'やや運気が落ち着く日。慎重に行動し、大きな決断は避けるのが無難。ガチャは翌日以降推奨。',1:'六曜・九星ともに控えめな日。休養・準備・読書に充てて翌日以降に備えましょう。'};
+function showCalDetail(d,l){
+  const det=document.getElementById('cal-detail');
+  det.innerHTML=`<div style="color:var(--gold);font-size:.76rem;margin-bottom:6px">${calYear}年${calMonth+1}月${d}日 — ${LUCK_LABELS[l]}</div><div style="font-size:.78rem;line-height:1.75">${LUCK_TEXTS[l]}</div>`;
+  det.classList.add('show');
+}
+function chgCalMonth(d){calMonth+=d;if(calMonth<0){calMonth=11;calYear--}if(calMonth>11){calMonth=0;calYear++}renderCalendar()}
+
+// ── Settings ──
+function saveSettings(){
+  document.getElementById('saved-msg').style.display='block';
+  setTimeout(()=>document.getElementById('saved-msg').style.display='none',2500);
+}
+
+
+// ============================================
+//  RESTAURANT SEARCH ENGINE
+//  Powered by OpenStreetMap / Overpass API
+//  完全無料・APIキー不要・全国対応
+// ============================================
+
+// 飲食店カテゴリマッピング
+const REST_CATEGORIES = {
+  restaurant: {label:'レストラン', icon:'🍽️', query:'amenity=restaurant'},
+  fast_food:  {label:'ファストフード', icon:'🍔', query:'amenity=fast_food'},
+  cafe:       {label:'カフェ', icon:'☕', query:'amenity=cafe'},
+  ramen:      {label:'ラーメン', icon:'🍜', query:'cuisine=ramen'},
+  sushi:      {label:'寿司', icon:'🍣', query:'cuisine=sushi'},
+  izakaya:    {label:'居酒屋', icon:'🍺', query:'amenity=bar'},
+  udon:       {label:'うどん・蕎麦', icon:'🍜', query:'cuisine=udon;soba'},
+};
+
+// 占い的な理由生成（スコアと合わせて）
+const REST_REASONS_TMPL = [
+  '今日のラッキーカラーと一致するメニューが期待できます。運気との相性◎',
+  '九星気学の吉方位にある飲食店。訪れることで開運エネルギーを取り込めます。',
+  'タロット「${tarot}」の導きにより、この場所での食事が運気を高めます。',
+  '風水的に水の気が流れるエリア。縁結びと金運に好影響をもたらします。',
+  '牡羊座の火のエネルギーが今日ここで最も強く共鳴しています。',
+  '六白金星の吉方位に位置し、食事で金気を補充できる場所です。',
+  '今日の数秘${nm}と店舗の波動が一致。食事運が最高の場所。',
+  'ルーン「${rune}」が示す場所。ここでの出会いが新しい縁を生みます。',
+];
+
+let nearbyRestaurants = []; // キャッシュ
+
+async function searchRestaurants() {
+  if (!coords) {
+    showErr('先に「現在地を取得」ボタンでGPS取得してください');
+    return;
+  }
+
+  const resultsDiv = document.getElementById('rest-results');
+  const sourceDiv = document.getElementById('rest-source');
+  const category = document.getElementById('rest-category').value;
+  const radius = parseInt(document.getElementById('rest-radius').value);
+
+  resultsDiv.innerHTML = '<div class="rest-loading">🔍 周辺の飲食店を検索中...</div>';
+  sourceDiv.style.display = 'none';
+
+  try {
+    // Overpass API クエリ構築
+    const query = buildOverpassQuery(coords.lat, coords.lon, radius, category);
+    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+
+    const response = await fetch(url, { signal: AbortSignal.timeout(15000) });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+
+    const restaurants = parseOverpassResults(data, coords, radius);
+    nearbyRestaurants = restaurants;
+
+    if (restaurants.length === 0) {
+      resultsDiv.innerHTML = `
+        <div class="search-status err">
+          📍 ${radius}m以内に飲食店データが見つかりませんでした。<br>
+          <span style="font-size:.68rem">範囲を広げるか、カテゴリを「すべて」で再検索してください</span>
+        </div>`;
+      return;
+    }
+
+    renderRestaurants(restaurants);
+    sourceDiv.style.display = 'block';
+    document.getElementById('rest-search-cs').textContent =
+      `✅ ${restaurants.length}件の飲食店が見つかりました（${radius}m以内）`;
+
+  } catch (err) {
+    console.error('Overpass API error:', err);
+    resultsDiv.innerHTML = `
+      <div class="search-status err">
+        ⚠️ 飲食店の取得に失敗しました。<br>
+        <span style="font-size:.68rem">ネットワークエラーまたはAPIが一時的に利用不可。少し待ってから再試行してください。</span>
+      </div>`;
+  }
+}
+
+function buildOverpassQuery(lat, lon, radius, category) {
+  const around = `(around:${radius},${lat},${lon})`;
+
+  if (category === 'all') {
+    return `[out:json][timeout:20];
+(
+  node["amenity"="restaurant"]${around};
+  node["amenity"="fast_food"]${around};
+  node["amenity"="cafe"]${around};
+  node["amenity"="bar"]${around};
+  node["amenity"="food_court"]${around};
+  node["cuisine"="ramen"]${around};
+  node["cuisine"="sushi"]${around};
+  node["cuisine"="udon"]${around};
+  node["cuisine"="soba"]${around};
+  way["amenity"="restaurant"]${around};
+  way["amenity"="fast_food"]${around};
+  way["amenity"="cafe"]${around};
+);
+out body center;`;
+  }
+
+  const catInfo = REST_CATEGORIES[category];
+  if (!catInfo) return buildOverpassQuery(lat, lon, radius, 'all');
+
+  const [key, val] = catInfo.query.includes(';')
+    ? catInfo.query.split('=')
+    : catInfo.query.split('=');
+
+  if (catInfo.query.includes(';')) {
+    // 複数値（udon;sobaなど）
+    const vals = val.split(';');
+    const nodes = vals.map(v => `node["${key}"="${v}"]${around};`).join('\n  ');
+    return `[out:json][timeout:20];\n(\n  ${nodes}\n);\nout body center;`;
+  }
+
+  return `[out:json][timeout:20];
+(
+  node["${key}"="${val}"]${around};
+  way["${key}"="${val}"]${around};
+);
+out body center;`;
+}
+
+function parseOverpassResults(data, userCoords, radius) {
+  const elements = data.elements || [];
+  const seen = new Set();
+  const results = [];
+
+  for (const el of elements) {
+    const tags = el.tags || {};
+    const name = tags.name || tags['name:ja'] || tags['name:en'];
+    if (!name) continue;
+    if (seen.has(name)) continue;
+    seen.add(name);
+
+    // 座標取得
+    const lat = el.lat || (el.center && el.center.lat);
+    const lon = el.lon || (el.center && el.center.lon);
+    if (!lat || !lon) continue;
+
+    // 距離計算
+    const dist = calcDist(userCoords.lat, userCoords.lon, lat, lon);
+    if (dist > radius) continue;
+
+    // カテゴリ判定
+    const { icon, label } = detectCategory(tags);
+
+    // 住所
+    const addr = buildAddress(tags);
+
+    // 営業時間
+    const hours = tags['opening_hours'] || '';
+
+    results.push({ name, icon, label, addr, dist, lat, lon, tags, hours });
+  }
+
+  // 距離順でソート
+  return results.sort((a, b) => a.dist - b.dist).slice(0, 20);
+}
+
+function calcDist(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+  return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+}
+
+function detectCategory(tags) {
+  const amenity = tags.amenity || '';
+  const cuisine = tags.cuisine || '';
+  const catMap = [
+    { key:'sushi', icon:'🍣', label:'寿司' },
+    { key:'ramen', icon:'🍜', label:'ラーメン' },
+    { key:'udon', icon:'🍜', label:'うどん・蕎麦' },
+    { key:'soba', icon:'🍜', label:'蕎麦' },
+    { key:'tempura', icon:'🍤', label:'天ぷら' },
+    { key:'yakitori', icon:'🍗', label:'焼き鳥' },
+    { key:'tonkatsu', icon:'🥩', label:'とんかつ' },
+    { key:'curry', icon:'🍛', label:'カレー' },
+    { key:'italian', icon:'🍝', label:'イタリアン' },
+    { key:'chinese', icon:'🥡', label:'中華料理' },
+    { key:'french', icon:'🥐', label:'フレンチ' },
+    { key:'burger', icon:'🍔', label:'バーガー' },
+    { key:'pizza', icon:'🍕', label:'ピザ' },
+    { key:'steak', icon:'🥩', label:'ステーキ' },
+    { key:'seafood', icon:'🦞', label:'海鮮' },
+    { key:'yakiniku', icon:'🥩', label:'焼肉' },
+  ];
+  for (const c of catMap) {
+    if (cuisine.includes(c.key)) return { icon: c.icon, label: c.label };
+  }
+  if (amenity === 'cafe') return { icon: '☕', label: 'カフェ' };
+  if (amenity === 'fast_food') return { icon: '🍔', label: 'ファストフード' };
+  if (amenity === 'bar') return { icon: '🍺', label: '居酒屋・バー' };
+  if (amenity === 'food_court') return { icon: '🍽️', label: 'フードコート' };
+  return { icon: '🍽️', label: 'レストラン' };
+}
+
+function buildAddress(tags) {
+  const parts = [];
+  if (tags['addr:province'] || tags['addr:state']) parts.push(tags['addr:province'] || tags['addr:state']);
+  if (tags['addr:city']) parts.push(tags['addr:city']);
+  if (tags['addr:suburb']) parts.push(tags['addr:suburb']);
+  if (tags['addr:quarter']) parts.push(tags['addr:quarter']);
+  if (tags['addr:street']) parts.push(tags['addr:street']);
+  if (tags['addr:housenumber']) parts.push(tags['addr:housenumber']);
+  return parts.join(' ') || '';
+}
+
+function renderRestaurants(restaurants) {
+  const resultsDiv = document.getElementById('rest-results');
+  const seed = combinedSeed();
+  const d = computeAll();
+  const tarotName = d.tarot?.n || 'タロット';
+  const nmVal = d.nm || 5;
+
+  const reasons = REST_REASONS_TMPL.map(r =>
+    r.replace('${tarot}', tarotName).replace('${nm}', nmVal).replace('${rune}', d.rune?.n || 'ルーン')
+  );
+
+  // 上位3件は特別表示
+  const top3 = restaurants.slice(0, 3);
+  const rest = restaurants.slice(3);
+
+  let html = `<div class="search-status ok">✅ ${restaurants.length}件の飲食店が見つかりました</div>`;
+
+  // TOP3
+  top3.forEach((r, i) => {
+    const luckScore = Math.min(99, Math.max(60, Math.round(90 - i * 8 + (sRand(seed * 157 + i * 53) - 0.5) * 14)));
+    const reason = reasons[(seed + i) % reasons.length];
+    const rankLabel = i === 0 ? '🥇 第1位 — 最もラッキーな飲食店' : i === 1 ? '🥈 第2位' : '🥉 第3位';
+    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}`;
+    const distStr = r.dist < 1000 ? `${r.dist}m` : `${(r.dist/1000).toFixed(1)}km`;
+
+    html += `
+    <div class="rest-item ${i === 0 ? 'selected' : ''}" onclick="selectRestaurant(this, '${r.name.replace(/'/g,"\'")}')">
+      <div class="rest-rank">${rankLabel} <span class="rest-dist">${distStr}</span></div>
+      <div class="rest-name">${r.icon} ${r.name}</div>
+      <div class="rest-type">
+        <span class="rest-badge">${r.label}</span>
+        ${r.hours ? `<span class="rest-badge">🕐 ${r.hours.slice(0,20)}</span>` : ''}
+        <a href="${mapUrl}" target="_blank" class="map-link">🗺️ 地図で見る</a>
+      </div>
+      ${r.addr ? `<div class="rest-addr">📍 ${r.addr}</div>` : ''}
+      <div class="rest-reason">✦ ${reason}</div>
+      <div style="margin-top:5px;font-size:.7rem">運気スコア：<span style="color:var(--gold-light);font-weight:700">${luckScore}pt</span> ${'★'.repeat(Math.round(luckScore/20))}${'☆'.repeat(5-Math.round(luckScore/20))}</div>
+    </div>`;
+  });
+
+  // 残りを折りたたみ表示
+  if (rest.length > 0) {
+    html += `
+    <details style="margin-top:8px">
+      <summary style="cursor:pointer;font-size:.75rem;color:var(--muted);padding:8px;background:rgba(255,255,255,.03);border-radius:8px;list-style:none">
+        ▼ その他の周辺飲食店 ${rest.length}件を表示
+      </summary>
+      <div style="margin-top:6px">`;
+
+    rest.forEach((r, i) => {
+      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}`;
+      const distStr = r.dist < 1000 ? `${r.dist}m` : `${(r.dist/1000).toFixed(1)}km`;
+      html += `
+      <div class="rest-item" onclick="selectRestaurant(this, '${r.name.replace(/'/g,"\'")}')">
+        <div class="rest-name">${r.icon} ${r.name} <span class="rest-dist">${distStr}</span></div>
+        <div class="rest-type"><span class="rest-badge">${r.label}</span>
+          <a href="${mapUrl}" target="_blank" class="map-link">🗺️ 地図</a></div>
+        ${r.addr ? `<div class="rest-addr">📍 ${r.addr}</div>` : ''}
+      </div>`;
+    });
+
+    html += `</div></details>`;
+  }
+
+  resultsDiv.innerHTML = html;
+}
+
+function selectRestaurant(el, name) {
+  // 選択状態トグル
+  document.querySelectorAll('.rest-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  // 食事欄に反映
+  const sit = document.getElementById('situation');
+  if (sit) sit.value = name + ' 付近';
+}
+
+// GPS取得時に自動で検索バーを表示
+function showRestaurantSearch() {
+  document.getElementById('no-gps-msg').style.display = 'none';
+  document.getElementById('rest-search-bar').style.display = 'block';
+}
+
+
+// ============================================
+//  LUCKY SPOT ENGINE
+//  OpenStreetMap / Overpass API 全国対応
+// ============================================
+
+// スポットカテゴリ定義
+const SPOT_TYPES = [
+  { key:'shrine',   icon:'⛩️',  label:'神社',     query:'historic=wayside_shrine',  q2:'amenity=place_of_worship religion=shinto' },
+  { key:'temple',   icon:'🏯',  label:'寺院',     query:'historic=temple' },
+  { key:'park',     icon:'🌿',  label:'公園',     query:'leisure=park' },
+  { key:'garden',   icon:'🌸',  label:'庭園',     query:'leisure=garden' },
+  { key:'castle',   icon:'🏰',  label:'城・史跡',  query:'historic=castle' },
+  { key:'museum',   icon:'🏛️',  label:'博物館',   query:'tourism=museum' },
+  { key:'viewpoint',icon:'👁️',  label:'展望台',   query:'tourism=viewpoint' },
+  { key:'hotspring',icon:'♨️',  label:'温泉',     query:'amenity=spa' },
+  { key:'beach',    icon:'🏖️',  label:'海岸・砂浜', query:'natural=beach' },
+  { key:'waterfall',icon:'💧',  label:'滝',       query:'waterway=waterfall' },
+];
+
+// 占術的な理由テンプレート（方位・タロット・九星と連動）
+const SPOT_REASON_TEMPLATES = {
+  shrine:    [ '九星気学の{dir}方位にある聖域。参拝することで邪気が払われ、{star}のパワーが増幅します。',
+               '六白金星の気と神域のエネルギーが共鳴。今日訪れると特別なご縁が結ばれます。',
+               'タロット「{tarot}」が示す浄化の場所。今日の開運行動として最適です。' ],
+  temple:    [ '仏閣の静寂なエネルギーが{dir}方位から吉気を引き込みます。合掌で心を整えて。',
+               '紫微斗数の{star}が護る寺院。今日訪れることで運気の底上げが期待できます。' ],
+  park:      [ '自然の木気が{dir}方位の吉エネルギーと調和。深呼吸で運気をリセットできます。',
+               'タロット「{tarot}」が示す生命力の場所。緑の中で気を充電しましょう。',
+               'B型の自由なエネルギーと自然の気が共鳴。散歩するだけで運気UP。' ],
+  garden:    [ '風水的に水と緑が調和する庭園。{dir}方位に位置し、今日の金運を高めます。' ],
+  castle:    [ '歴史の気が凝縮された場所。六白金星の剛毅な精神と共鳴する城跡。',
+               '算命学的に「権威と実力」の場所。仕事運・勝負運の強化に訪れると吉。' ],
+  museum:    [ '知識と文化のエネルギーが充満。数秘{nm}の「探求心」と完全一致する場所。' ],
+  viewpoint: [ '高所の気が九星気学の{dir}方位と一致。遠望することで視野と運気が広がります。' ],
+  hotspring: [ '温泉の地熱エネルギーが体の邪気を浄化。今日の運気リセットに最適な場所。' ],
+  beach:     [ '海のエネルギーが{dir}方位の吉気を運んでくる。波音で心を浄化しましょう。',
+               '水の気が牡羊座の火と調和し、恋愛運と創造力が大幅にUP。' ],
+  waterfall: [ '流水の浄化エネルギーが最強の開運スポット。タロット「{tarot}」の流れと一致。' ],
+};
+
+const GENERIC_REASONS = [
+  '{dir}方位に位置し、今日の九星気学の吉方位と完全一致。',
+  'タロット「{tarot}」の示す開運の地。今日訪れることで運気が大きく前進します。',
+  '六白金星×牡羊座のパワーが最も強く集まるエリアです。',
+  '数秘{nm}の「変化」のエネルギーと共鳴する場所。新しい出会いの予兆あり。',
+  'ルーン「{rune}」が示す力の源泉。ここを訪れることで本来の力が覚醒します。',
+];
+
+async function fetchLuckySpots(seed, luckyDir) {
+  const resultDiv = document.getElementById('lucky-spot-results');
+  const subDiv    = document.getElementById('spot-card-sub');
+  if (!resultDiv) return;
+
+  // 座標なし → フォールバック表示
+  if (!coords) {
+    resultDiv.innerHTML = `
+      <div class="spot-no-gps">
+        📍 「現在地を取得」または住所を手動入力すると、<br>
+        <strong style="color:var(--gold-light)">全国どこでも</strong>周辺の開運スポットが表示されます<br>
+        <span style="font-size:.66rem">神社・寺院・公園・城・温泉など対応</span>
+      </div>`;
+    if (subDiv) subDiv.textContent = '位置情報を設定するとスポットが表示されます';
+    return;
+  }
+
+  resultDiv.innerHTML = '<div class="spot-loading">⛩️ 周辺の開運スポットを検索中...</div>';
+  if (subDiv) subDiv.textContent = '検索中...';
+
+  try {
+    const radius = 3000; // 3km以内
+    const query = buildSpotQuery(coords.lat, coords.lon, radius);
+    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    const resp = await fetch(url, { signal: AbortSignal.timeout(18000) });
+    if (!resp.ok) throw new Error('API error ' + resp.status);
+    const data = await resp.json();
+
+    const spots = parseSpots(data, coords, radius, seed);
+
+    if (spots.length === 0) {
+      // 範囲を広げて再検索
+      await fetchLuckySpotsWide(seed, luckyDir, resultDiv, subDiv);
+      return;
+    }
+
+    renderLuckySpots(spots, seed, luckyDir, resultDiv, subDiv);
+
+  } catch(e) {
+    console.warn('Spot fetch error:', e);
+    resultDiv.innerHTML = `
+      <div class="spot-no-gps" style="border-color:rgba(255,100,100,.3)">
+        ⚠️ スポット取得に失敗しました。<br>
+        <span style="font-size:.66rem">ネットワークエラーの可能性があります。少し待ってから再度「運勢を占う」をお試しください。</span>
+      </div>`;
+    if (subDiv) subDiv.textContent = 'スポット取得失敗';
+  }
+}
+
+async function fetchLuckySpotsWide(seed, luckyDir, resultDiv, subDiv) {
+  try {
+    const radius = 10000; // 10kmに拡大
+    const query = buildSpotQuery(coords.lat, coords.lon, radius);
+    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    const resp = await fetch(url, { signal: AbortSignal.timeout(18000) });
+    const data = await resp.json();
+    const spots = parseSpots(data, coords, radius, seed);
+
+    if (spots.length === 0) {
+      resultDiv.innerHTML = `
+        <div class="spot-no-gps">
+          📍 10km以内にスポット情報が見つかりませんでした。<br>
+          <span style="font-size:.66rem">OpenStreetMapのデータが少ない地域の可能性があります。</span>
+        </div>`;
+      if (subDiv) subDiv.textContent = 'スポットが見つかりませんでした';
+      return;
+    }
+    renderLuckySpots(spots, seed, luckyDir, resultDiv, subDiv);
+  } catch(e) {
+    resultDiv.innerHTML = '<div class="spot-no-gps">⚠️ スポット取得に失敗しました。</div>';
+  }
+}
+
+function buildSpotQuery(lat, lon, radius) {
+  const ar = `(around:${radius},${lat},${lon})`;
+  return `[out:json][timeout:25];
+(
+  node["amenity"="place_of_worship"]["religion"="shinto"]${ar};
+  node["amenity"="place_of_worship"]["religion"="buddhist"]${ar};
+  node["historic"="castle"]${ar};
+  node["historic"="ruins"]${ar};
+  node["leisure"="park"]${ar};
+  node["leisure"="garden"]${ar};
+  node["tourism"="museum"]${ar};
+  node["tourism"="viewpoint"]${ar};
+  node["tourism"="attraction"]${ar};
+  node["amenity"="spa"]${ar};
+  node["natural"="beach"]${ar};
+  node["natural"="peak"]${ar};
+  node["waterway"="waterfall"]${ar};
+  way["amenity"="place_of_worship"]["religion"="shinto"]${ar};
+  way["amenity"="place_of_worship"]["religion"="buddhist"]${ar};
+  way["leisure"="park"]${ar};
+  way["historic"="castle"]${ar};
+  way["tourism"="museum"]${ar};
+  way["natural"="beach"]${ar};
+);
+out body center;`;
+}
+
+function parseSpots(data, userCoords, radius, seed) {
+  const elements = data.elements || [];
+  const seen = new Set();
+  const results = [];
+
+  for (const el of elements) {
+    const tags = el.tags || {};
+    const name = tags.name || tags['name:ja'] || tags['name:en'];
+    if (!name || seen.has(name)) continue;
+    seen.add(name);
+
+    const lat = el.lat || (el.center && el.center.lat);
+    const lon = el.lon || (el.center && el.center.lon);
+    if (!lat || !lon) continue;
+
+    const dist = calcDist(userCoords.lat, userCoords.lon, lat, lon);
+
+    const { icon, label, key } = detectSpotCategory(tags);
+    const addr = buildAddress(tags);
+
+    // 開運スコア（距離・カテゴリ・シードで算出）
+    const distFactor = Math.max(0, 1 - dist / radius);
+    const catBonus = { shrine:12, temple:10, castle:8, garden:8, hotspring:7, waterfall:9, beach:8, park:5, museum:4, viewpoint:5 };
+    const baseScore = 65 + (catBonus[key] || 5) + distFactor * 20;
+    const luckScore = Math.min(99, Math.max(55, Math.round(baseScore + (sRand(seed * 163 + results.length * 59) - 0.5) * 14)));
+
+    results.push({ name, icon, label, key, addr, dist, lat, lon, tags, luckScore });
+  }
+
+  return results
+    .sort((a, b) => b.luckScore - a.luckScore)
+    .slice(0, 15);
+}
+
+function detectSpotCategory(tags) {
+  const amenity  = tags.amenity  || '';
+  const historic = tags.historic || '';
+  const leisure  = tags.leisure  || '';
+  const tourism  = tags.tourism  || '';
+  const natural  = tags.natural  || '';
+  const waterway = tags.waterway || '';
+  const religion = tags.religion || '';
+
+  if (amenity === 'place_of_worship') {
+    if (religion === 'shinto') return { icon:'⛩️', label:'神社', key:'shrine' };
+    return { icon:'🏯', label:'寺院', key:'temple' };
+  }
+  if (historic === 'castle' || historic === 'ruins') return { icon:'🏰', label:'城・史跡', key:'castle' };
+  if (leisure === 'park')    return { icon:'🌿', label:'公園', key:'park' };
+  if (leisure === 'garden')  return { icon:'🌸', label:'庭園・植物園', key:'garden' };
+  if (tourism === 'museum')  return { icon:'🏛️', label:'博物館・美術館', key:'museum' };
+  if (tourism === 'viewpoint') return { icon:'👁️', label:'展望台・展望所', key:'viewpoint' };
+  if (tourism === 'attraction') return { icon:'🌟', label:'観光スポット', key:'viewpoint' };
+  if (amenity === 'spa')     return { icon:'♨️', label:'温泉・スパ', key:'hotspring' };
+  if (natural === 'beach')   return { icon:'🏖️', label:'海岸・砂浜', key:'beach' };
+  if (natural === 'peak')    return { icon:'⛰️', label:'山・峰', key:'viewpoint' };
+  if (waterway === 'waterfall') return { icon:'💧', label:'滝', key:'waterfall' };
+  return { icon:'📍', label:'スポット', key:'park' };
+}
+
+function renderLuckySpots(spots, seed, luckyDir, resultDiv, subDiv) {
+  // 占いデータ取得
+  const d = computeAll ? computeAll() : {};
+  const tarotName = d.tarot ? d.tarot.n : 'タロット';
+  const nmVal = d.nm || 5;
+  const runeVal = d.rune ? d.rune.n : 'ルーン';
+  const dirVal = luckyDir || '南';
+  const kyuName = document.getElementById('kyusei')?.value || '六白金星';
+
+  function fillReason(tmpl) {
+    return tmpl
+      .replace('{dir}',   dirVal)
+      .replace('{tarot}', tarotName)
+      .replace('{nm}',    nmVal)
+      .replace('{rune}',  runeVal)
+      .replace('{star}',  kyuName);
+  }
+
+  function getReason(key, idx) {
+    const tmpls = SPOT_REASON_TEMPLATES[key] || GENERIC_REASONS;
+    return fillReason(tmpls[(seed + idx) % tmpls.length]);
+  }
+
+  const top3  = spots.slice(0, 3);
+  const rest  = spots.slice(3);
+  const rankIcons = ['🥇','🥈','🥉'];
+  const rankClass = ['rank1','rank2','rank3'];
+
+  if (subDiv) subDiv.textContent = `${spots.length}件の開運スポットが見つかりました`;
+
+  let html = '';
+  top3.forEach((s, i) => {
+    const distStr = s.dist < 1000 ? `${s.dist}m` : `${(s.dist/1000).toFixed(1)}km`;
+    const mapUrl  = `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`;
+    const reason  = getReason(s.key, i);
+    const stars   = '★'.repeat(Math.round(s.luckScore / 20)) + '☆'.repeat(5 - Math.round(s.luckScore / 20));
+
+    html += `
+    <div class="spot-item ${rankClass[i]}">
+      <div class="spot-rank-label">
+        <span>${rankIcons[i]} 第${i+1}位 開運スポット | ${s.label}</span>
+        <span class="spot-dist">📏 ${distStr}</span>
+      </div>
+      <div class="spot-name">${s.icon} ${s.name}</div>
+      <div class="spot-cat">
+        <span style="font-size:.62rem;padding:2px 8px;border-radius:10px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.3);color:#C4B5FD;margin-right:5px">${s.label}</span>
+        <a href="${mapUrl}" target="_blank" style="font-size:.68rem;color:var(--cyan);text-decoration:none">🗺️ 地図で見る</a>
+      </div>
+      ${s.addr ? `<div class="spot-addr">📍 ${s.addr}</div>` : ''}
+      <div class="spot-reason">✦ ${reason}</div>
+      <div class="spot-score">開運スコア：<span style="color:var(--gold-light);font-weight:700">${s.luckScore}pt</span> ${stars}</div>
+    </div>`;
+  });
+
+  if (rest.length > 0) {
+    html += `
+    <details style="margin-top:8px">
+      <summary style="cursor:pointer;font-size:.74rem;color:var(--muted);padding:8px;background:rgba(255,255,255,.03);border-radius:8px;list-style:none">
+        ▼ その他の周辺スポット ${rest.length}件を表示
+      </summary>
+      <div style="margin-top:6px">`;
+    rest.forEach((s, i) => {
+      const distStr = s.dist < 1000 ? `${s.dist}m` : `${(s.dist/1000).toFixed(1)}km`;
+      const mapUrl  = `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`;
+      html += `
+      <div class="spot-item">
+        <div class="spot-name">${s.icon} ${s.name} <span class="spot-dist" style="float:right">${distStr}</span></div>
+        <div class="spot-cat">
+          <span style="font-size:.6rem;padding:2px 7px;border-radius:10px;background:rgba(139,92,246,.15);color:#C4B5FD;margin-right:5px">${s.label}</span>
+          <a href="${mapUrl}" target="_blank" style="font-size:.66rem;color:var(--cyan);text-decoration:none">🗺️ 地図</a>
+        </div>
+        ${s.addr ? `<div class="spot-addr">📍 ${s.addr}</div>` : ''}
+      </div>`;
+    });
+    html += `</div></details>`;
+  }
+
+  html += `<div style="font-size:.58rem;color:var(--muted);text-align:right;margin-top:8px">データ出典: OpenStreetMap contributors (ODbL)</div>`;
+  resultDiv.innerHTML = html;
+}
+
+// ── Init ──
+renderCalendar();
+</script>
+</body>
+</html>
