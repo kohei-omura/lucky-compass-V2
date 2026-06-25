@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🔮 Lucky Compass — 全占術統合 開運ナビ</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700;900&family=Zen+Old+Mincho:wght@400;700;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#07040F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lucky Compass">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <style>
 :root {
   --gold:#C9A84C; --gold-light:#F0D080; --gold-dark:#8A6A1A;
@@ -14,39 +23,27 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Noto Serif JP',serif;background:var(--deep);color:var(--text);min-height:100vh;overflow-x:hidden}
-
-/* ── Starfield ── */
 .starfield{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) infinite var(--delay,0s)}
 @keyframes twinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:1;transform:scale(1.6)}}
 .shoot{position:absolute;width:130px;height:1px;background:linear-gradient(90deg,transparent,#fff,transparent);animation:shoot var(--sd,5s) linear infinite var(--ss,0s);opacity:0}
 @keyframes shoot{0%{transform:translateX(-200px) translateY(0) rotate(-30deg);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(calc(100vw + 200px)) translateY(200px) rotate(-30deg);opacity:0}}
-
-/* ── Layout ── */
 .wrap{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:20px 16px 80px}
-
-/* ── Header ── */
 header{text-align:center;padding:36px 0 22px}
 .hdr-sym{font-size:3rem;display:block;margin-bottom:8px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(201,168,76,.6))}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 h1{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.12em;margin-bottom:5px}
 .subtitle{font-size:.7rem;color:var(--muted);letter-spacing:.2em}
-
-/* ── Info bar ── */
 .info-bar{display:flex;gap:8px;margin:16px 0 12px}
 .info-chip{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:9px 8px;text-align:center}
 .ic-label{color:var(--gold);font-size:.6rem;letter-spacing:.1em;margin-bottom:2px}
 .ic-val{color:var(--text);font-weight:700;font-size:.76rem}
-
-/* ── Tabs ── */
 .tab-nav{display:flex;gap:5px;margin:14px 0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .tab-nav::-webkit-scrollbar{display:none}
 .tb{flex-shrink:0;padding:8px 13px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:20px;color:var(--muted);font-size:.72rem;font-family:'Noto Serif JP',serif;cursor:pointer;transition:all .2s;white-space:nowrap}
 .tb.active,.tb:hover{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold-light)}
 .tc{display:none}.tc.active{display:block;animation:fiu .45s ease}
 @keyframes fiu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── Settings card ── */
 .scard{background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.14);border-radius:18px;padding:18px;margin:12px 0}
 .sc-title{font-size:.7rem;color:var(--gold);letter-spacing:.15em;margin-bottom:14px;text-align:center}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
@@ -56,8 +53,6 @@ label{font-size:.66rem;color:var(--muted);letter-spacing:.07em}
 select,input{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.22);border-radius:10px;color:var(--text);padding:8px 10px;font-size:.76rem;font-family:'Noto Serif JP',serif;width:100%;appearance:none}
 select:focus,input:focus{outline:none;border-color:var(--gold)}
 option{background:#1A0A2E}
-
-/* ── Buttons ── */
 .main-btn{width:100%;padding:15px;border:none;border-radius:14px;color:#fff;font-size:.92rem;font-family:'Zen Old Mincho',serif;font-weight:700;letter-spacing:.1em;cursor:pointer;margin:12px 0;background:linear-gradient(135deg,#7C3AED,#C9A84C,#7C3AED);background-size:200% 200%;animation:gshift 3s ease infinite;position:relative;overflow:hidden;transition:transform .1s}
 @keyframes gshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .main-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.1),transparent);pointer-events:none}
@@ -65,8 +60,6 @@ option{background:#1A0A2E}
 .loc-btn{width:100%;padding:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:12px;color:var(--gold);font-size:.8rem;font-family:'Noto Serif JP',serif;cursor:pointer;margin-bottom:10px;transition:all .2s}
 .loc-btn:hover{background:rgba(201,168,76,.2)}
 .loc-btn.ok{border-color:rgba(100,255,150,.4);color:#80FFB0;background:rgba(100,255,150,.05)}
-
-/* ── Cards ── */
 .rc{border-radius:18px;padding:20px;margin:12px 0;position:relative;overflow:hidden}
 .rc::before{content:'';position:absolute;inset:0;border-radius:18px;padding:1px;background:linear-gradient(135deg,var(--gold),transparent,var(--accent));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 .c-time{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(7,4,15,.8))}
@@ -77,35 +70,17 @@ option{background:#1A0A2E}
 .c-daily{background:linear-gradient(135deg,rgba(80,200,120,.1),rgba(7,4,15,.8))}
 .c-cal{background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(7,4,15,.9))}
 .c-msg{background:linear-gradient(135deg,rgba(201,168,76,.07),rgba(139,92,246,.07));border:1px solid rgba(201,168,76,.22);border-radius:14px;padding:16px;margin-bottom:12px;font-size:.85rem;line-height:1.85}
-
 .ch{display:flex;align-items:center;gap:11px;margin-bottom:14px}
 .ci{font-size:1.5rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border-radius:11px;flex-shrink:0}
 .ct{font-family:'Zen Old Mincho',serif;font-size:.96rem;color:var(--gold);letter-spacing:.1em}
 .cs{font-size:.66rem;color:var(--muted);margin-top:1px}
-
-/* ── Time grid ── */
 .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .titem{background:rgba(255,255,255,.04);border-radius:11px;padding:10px;text-align:center}
 .trange{font-size:.85rem;font-weight:700;color:var(--gold);margin-bottom:3px}
 .tscore{font-size:1.35rem;font-weight:900;margin:3px 0}
 .tlabel{font-size:.66rem;color:var(--muted)}
-
-/* ── Place / Food ── */
 .pi{background:rgba(255,255,255,.04);border-radius:13px;padding:13px;margin-bottom:8px;border-left:3px solid var(--accent)}
-.pr{font-size:.6rem;color:var(--accent);letter-spacing:.1em;margin-bottom:3px}
-.pn{font-size:.92rem;font-weight:700;margin-bottom:2px}
-.ps{font-size:.75rem;color:var(--gold);margin-bottom:2px}
-.pd{font-size:.72rem;color:var(--muted);line-height:1.6}
 .fi{background:rgba(255,255,255,.04);border-radius:13px;padding:13px;margin-bottom:8px;border-left:3px solid var(--rose)}
-.fr2{font-size:.6rem;color:var(--rose);letter-spacing:.1em;margin-bottom:3px}
-
-/* ── Divination ── */
-.di{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.di:last-child{border-bottom:none}
-.dn{font-size:.66rem;color:var(--gold);letter-spacing:.1em;margin-bottom:3px}
-.dt{font-size:.76rem;line-height:1.7}
-
-/* ── Gacha ── */
 .gi{background:rgba(255,255,255,.04);border-radius:13px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:11px;border-left:3px solid var(--cyan)}
 .gi.t1{border-left-color:#FFD700;background:rgba(255,215,0,.06)}
 .gi.t2{border-left-color:#C0C0C0}
@@ -121,16 +96,12 @@ option{background:#1A0A2E}
 .gpull{font-size:.68rem;padding:3px 9px;border-radius:20px;background:rgba(77,200,224,.15);color:var(--cyan);border:1px solid rgba(77,200,224,.3);white-space:nowrap;flex-shrink:0}
 .gpull.rec{background:rgba(255,215,0,.15);color:#FFD700;border-color:rgba(255,215,0,.4)}
 .gpull.ng{background:rgba(255,100,100,.1);color:#FF8080;border-color:rgba(255,100,100,.3)}
-
-/* ── Daily ── */
 .ditem{background:rgba(255,255,255,.04);border-radius:13px;padding:13px;margin-bottom:9px;display:flex;align-items:flex-start;gap:11px}
 .demoji{font-size:1.9rem;flex-shrink:0}
 .dlabel{font-size:.6rem;color:var(--gold);letter-spacing:.1em;margin-bottom:2px}
 .dtitle{font-size:.9rem;font-weight:700;margin-bottom:2px}
 .dsub{font-size:.7rem;color:var(--muted);margin-bottom:3px}
 .dreason{font-size:.7rem;color:var(--cyan);line-height:1.6}
-
-/* ── Calendar ── */
 .cal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
 .cal-nav{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:8px;padding:5px 12px;color:var(--gold);cursor:pointer;font-size:.78rem}
 .cal-title{font-family:'Cinzel',serif;font-size:.95rem;color:var(--gold-light)}
@@ -150,8 +121,6 @@ option{background:#1A0A2E}
 .cl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .cal-detail{background:rgba(255,255,255,.04);border-radius:12px;padding:13px;margin-top:10px;font-size:.78rem;line-height:1.7;border:1px solid rgba(201,168,76,.15);display:none}
 .cal-detail.show{display:block;animation:fiu .4s ease}
-
-/* ── Score ring ── */
 .score-wrap{text-align:center;padding:4px 0 16px}
 .score-ring{width:130px;height:130px;margin:0 auto 14px;position:relative}
 .score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
@@ -159,37 +128,51 @@ option{background:#1A0A2E}
 .score-num{font-family:'Cinzel',serif;font-size:2.1rem;font-weight:700;color:var(--gold-light);line-height:1}
 .score-lbl{font-size:.62rem;color:var(--muted);letter-spacing:.15em;margin-top:2px}
 .verdict{font-family:'Zen Old Mincho',serif;font-size:1.1rem;color:var(--gold-light);margin-bottom:8px;letter-spacing:.1em}
-
-/* ── Lucky items grid ── */
 .li-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
 .li-item{background:rgba(255,255,255,.04);border-radius:11px;padding:11px;display:flex;align-items:center;gap:9px}
 .li-icon{font-size:1.4rem;flex-shrink:0}
 .li-cat{font-size:.58rem;color:var(--muted);letter-spacing:.08em}
 .li-name{font-size:.82rem;color:var(--text)}
-.color-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.cdot{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.18);cursor:pointer;transition:transform .2s;position:relative}
-.cdot:hover{transform:scale(1.2)}
-
-/* ── Error ── */
 .err{background:rgba(255,100,100,.1);border:1px solid rgba(255,100,100,.3);border-radius:12px;padding:12px;text-align:center;color:#FF8080;font-size:.8rem;margin:10px 0;display:none}
 .err.show{display:block}
-
-/* ── Game selector ── */
 #game-selector{display:flex;flex-wrap:wrap;gap:5px}
-
-/* ── Progress bars ── */
 .pbar-wrap{margin-bottom:12px}
 .pbar-hdr{display:flex;justify-content:space-between;margin-bottom:4px}
 .pbar-name{font-size:.76rem;color:var(--text)}
 .pbar-score{font-family:'Cinzel',serif;font-size:.76rem;color:var(--gold-light)}
 .pbar{height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
 .pbar-fill{height:100%;border-radius:4px;background:linear-gradient(to right,var(--violet),var(--gold));transition:width 1.2s ease}
-
-/* ── Scrollbar ── */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--deep)}
 ::-webkit-scrollbar-thumb{background:var(--violet);border-radius:4px}
 footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem;letter-spacing:.1em}
+.rest-item{background:rgba(255,255,255,.04);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;border-left:3px solid var(--rose);transition:all .2s}
+.rest-item.selected{border-left-color:var(--gold);background:rgba(201,168,76,.08)}
+.rest-rank{font-size:.64rem;color:var(--gold);margin-bottom:3px}
+.rest-name{font-size:.9rem;font-weight:700;margin-bottom:3px}
+.rest-dist{font-size:.64rem;color:var(--cyan)}
+.rest-type{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:3px}
+.rest-badge{font-size:.6rem;padding:2px 7px;border-radius:10px;background:rgba(255,107,157,.15);color:var(--rose)}
+.rest-addr{font-size:.64rem;color:var(--muted);margin-top:2px}
+.rest-reason{font-size:.66rem;color:var(--cyan);line-height:1.5;margin-top:3px}
+.map-link{font-size:.66rem;color:var(--cyan);text-decoration:none}
+.search-status{font-size:.72rem;padding:8px;border-radius:8px;margin-bottom:8px;text-align:center}
+.search-status.ok{background:rgba(80,200,120,.1);color:#80FFB0}
+.search-status.err{background:rgba(255,100,100,.1);color:#FF8080}
+.rest-loading,.spot-loading{text-align:center;padding:16px;color:var(--muted);font-size:.78rem}
+.no-gps-msg,.spot-no-gps{text-align:center;padding:14px;color:var(--muted);font-size:.74rem;line-height:1.6;background:rgba(255,255,255,.03);border-radius:10px}
+.rest-source{font-size:.58rem;color:var(--muted);text-align:right;margin-top:6px}
+.spot-item{background:rgba(255,255,255,.04);border-radius:12px;padding:12px;margin-bottom:8px;border-left:3px solid var(--accent)}
+.spot-item.rank1{border-left-color:#FFD700}
+.spot-item.rank2{border-left-color:#C0C0C0}
+.spot-item.rank3{border-left-color:#CD7F32}
+.spot-rank-label{display:flex;justify-content:space-between;font-size:.64rem;color:var(--gold);margin-bottom:3px}
+.spot-name{font-size:.9rem;font-weight:700;margin-bottom:3px}
+.spot-dist{font-size:.64rem;color:var(--cyan)}
+.spot-cat{margin-bottom:3px}
+.spot-addr{font-size:.64rem;color:var(--muted);margin-top:2px}
+.spot-reason{font-size:.66rem;color:var(--cyan);line-height:1.5;margin-top:3px}
+.spot-score{font-size:.7rem;margin-top:4px}
 </style>
 </head>
 <body>
@@ -218,25 +201,17 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
 
 <div class="err" id="errmsg"></div>
 
-<!-- ===== TAB: FORTUNE ===== -->
 <div class="tc active" id="tc-fortune">
-  <!-- 位置情報取得エリア -->
   <div class="scard" style="padding:14px 18px;margin-bottom:10px" id="location-card">
     <div style="font-size:.7rem;color:var(--gold);letter-spacing:.12em;margin-bottom:12px;text-align:center">📍 場所を設定（飲食店検索に使用）</div>
-
-    <!-- GPS取得 -->
     <button class="loc-btn" id="loc-btn" onclick="getLocation()">
       📡 GPSで現在地を自動取得
     </button>
-
-    <!-- 区切り -->
     <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
       <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
       <div style="font-size:.66rem;color:var(--muted)">または</div>
       <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
     </div>
-
-    <!-- 手動住所入力 -->
     <div style="display:flex;gap:8px">
       <input class="api-key-input" type="text" id="manual-addr-input"
         placeholder="住所・駅名・施設名を入力（例：渋谷駅、大阪城公園）"
@@ -244,8 +219,6 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
         onkeydown="if(event.key==='Enter')geocodeManual()">
       <button onclick="geocodeManual()" style="padding:9px 14px;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.4);border-radius:10px;color:var(--gold);font-size:.75rem;cursor:pointer;font-family:'Noto Serif JP',serif;white-space:nowrap;transition:all .2s">🔍 検索</button>
     </div>
-
-    <!-- ステータス表示 -->
     <div id="loc-status" style="font-size:.7rem;color:var(--muted);margin-top:8px;min-height:18px;line-height:1.5;text-align:center"></div>
   </div>
   <div class="scard" style="padding:14px 18px">
@@ -282,7 +255,6 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
     </div>
   </div>
 
-  <!-- Restaurant Search Section -->
   <div class="rc c-food" style="margin:10px 0">
     <div class="ch">
       <div class="ci">🍽️</div>
@@ -329,7 +301,6 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
   <div id="res-fortune"></div>
 </div>
 
-<!-- ===== TAB: GACHA ===== -->
 <div class="tc" id="tc-gacha">
   <div class="scard">
     <div class="sc-title">🎰 ガチャ占い — プレイ中ゲーム選択</div>
@@ -345,7 +316,6 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
   <div id="res-gacha"></div>
 </div>
 
-<!-- ===== TAB: DAILY ===== -->
 <div class="tc" id="tc-daily">
   <div style="font-size:.76rem;color:var(--muted);text-align:center;margin-bottom:14px;line-height:1.7">
     毎日変わる開運アニソン・フード・本・ラッキーアイテムを表示
@@ -354,7 +324,6 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
   <div id="res-daily"></div>
 </div>
 
-<!-- ===== TAB: CALENDAR ===== -->
 <div class="tc" id="tc-calendar">
   <div class="rc c-cal">
     <div class="ch"><div class="ci">📅</div><div><div class="ct">月間ラッキーカレンダー</div><div class="cs">日別運気 全占術計算</div></div></div>
@@ -374,7 +343,6 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
   </div>
 </div>
 
-<!-- ===== TAB: SETTINGS ===== -->
 <div class="tc" id="tc-settings">
   <div class="scard">
     <div class="sc-title">⚙️ プロフィール設定</div>
@@ -397,26 +365,19 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
 
 </div>
 <footer>Lucky Compass ✦ 全15種占術統合 ✦ APIキー不要 ✦ 完全無料</footer>
-
 <script>
 // =========================================
 //  LUCKY COMPASS — OFFLINE DIVINATION ENGINE
-//  完全オフライン動作 / APIキー不要
 // =========================================
-
-// ── Stars ──
 const SF = document.getElementById('sf');
 for(let i=0;i<140;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.4;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${Math.random()*3+2}s;--delay:${Math.random()*3}s`;SF.appendChild(s)}
 for(let i=0;i<4;i++){const s=document.createElement('div');s.className='shoot';s.style.cssText=`top:${Math.random()*40}%;left:0;--sd:${4+Math.random()*3}s;--ss:${i*3.5+Math.random()*4}s`;SF.appendChild(s)}
 
-// ── State ──
 let coords=null, locName='宮崎市 イオンモール';
 let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
 let selGames=new Set(['ウマ娘','ブルアカ','原神','崩壊：スターレイル','NIKKE','鳴潮','グラブル','Fate/GO','プリコネR','アズールレーン']);
 
-// ── All games ──
 const GAMES=[
-  // ガチャ系メイン
   'ウマ娘','ブルアカ','原神','崩壊：スターレイル','NIKKE','鳴潮','グラブル',
   'Fate/GO','プリコネR','アズールレーン','ヘブバン','白猫','崩壞3rd',
   '無期迷途','センレスゾーンゼロ','アリスギア','スクスト2','チェンクロ',
@@ -425,21 +386,14 @@ const GAMES=[
   'このファン','けもフレ3','ロススト','アサルトリリィ',
   'Echocalypse','Evertale','Alterna','フレソル',
   'まどドラ','ゆるドラ','異世異世','走れ！女神',
-  // カード・対戦系
   'Master Duel','Pokémon Card','コンパス',
-  // ポケモン系
   'Pokémon GO','PokémonMaster','ポケ森',
-  // 位置ゲー・散歩系
   'Pikmin Bloom',
-  // 戦略・RPG
   'AFKアリーナ','LINE MF','おねがい社長！','カゲマス',
-  // アクション・シューター
   'PUBG','Call of Duty','荒野行動',
-  // パズル・カジュアル
   'ツムツム','Black Desert Mobile',
 ];
 
-// ── Seeded random ──
 function sRand(seed){let x=Math.sin(seed+1)*73856;return x-Math.floor(x)}
 function sRandArr(seed,n){const r=[];for(let i=0;i<n;i++)r.push(sRand(seed*31+i*7919));return r}
 function dateSeed(d=new Date()){return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()}
@@ -450,24 +404,61 @@ function userSeed(){
 }
 function combinedSeed(){return dateSeed()*1000+userSeed()%1000}
 
-// ── 六曜 ──
+// ── 六曜（天文計算エンジン：旧暦・閏月対応・全年対応／2026実データ検証済み）──
 const ROKUYO=['大安','赤口','先勝','友引','先負','仏滅'];
 const ROKUYODESC={大安:'万事に最吉の日',赤口:'正午のみ吉、他は凶',先勝:'午前吉、午後凶',友引:'引き合わせに吉',先負:'午前凶、午後吉',仏滅:'万事凶の日'};
-function getLunarMonthDay(date){
-  const REF=new Date(2026,1,17);
-  const MONTH_DAYS=[30,29,30,30,29,30,29,30,29,30,30,29];
-  const diff=Math.floor((date-REF)/86400000);
-  let m=1,d=1+diff;
-  if(d>=1){while(true){const len=MONTH_DAYS[(m-1)%12];if(d<=len)break;d-=len;m++;}}
-  else{while(d<=0){m--;if(m<=0)m+=12;d+=MONTH_DAYS[(m-1)%12];}}
-  return[m,d];
+function _toJD(d){ return d.getTime()/86400000 + 2440587.5; }
+function _newMoonTD(k){
+  const T=k/1236.85, rad=Math.PI/180;
+  let jde=2451550.09766 + 29.530588861*k + 0.00015437*T*T - 0.000000150*T*T*T + 0.00000000073*T*T*T*T;
+  const M =(2.5534 + 29.10535670*k - 0.0000014*T*T - 0.00000011*T*T*T)*rad;
+  const Mp=(201.5643 + 385.81693528*k + 0.0107582*T*T + 0.00001238*T*T*T)*rad;
+  const F =(160.7108 + 390.67050284*k - 0.0016118*T*T - 0.00000227*T*T*T)*rad;
+  const O =(124.7746 - 1.56375588*k + 0.0020672*T*T + 0.00000215*T*T*T)*rad;
+  const E =1 - 0.002516*T - 0.0000074*T*T;
+  let c=0;
+  c+=-0.40720*Math.sin(Mp); c+=0.17241*E*Math.sin(M); c+=0.01608*Math.sin(2*Mp);
+  c+=0.01039*Math.sin(2*F); c+=0.00739*E*Math.sin(Mp-M); c+=-0.00514*E*Math.sin(Mp+M);
+  c+=0.00208*E*E*Math.sin(2*M); c+=-0.00111*Math.sin(Mp-2*F); c+=-0.00057*Math.sin(Mp+2*F);
+  c+=0.00056*E*Math.sin(2*Mp+M); c+=-0.00042*Math.sin(3*Mp); c+=0.00042*E*Math.sin(M+2*F);
+  c+=0.00038*E*Math.sin(M-2*F); c+=-0.00024*E*Math.sin(2*Mp-M); c+=-0.00017*Math.sin(O);
+  return jde+c;
 }
+function _deltaT(jd){ const t=(2000+(jd-2451545)/365.25)-2000; return (62.92+0.32217*t+0.005589*t*t)/86400; }
+function _sunLong(jd){
+  const T=(jd-2451545)/36525, rad=Math.PI/180;
+  let L0=280.46646+36000.76983*T+0.0003032*T*T, M=357.52911+35999.05029*T-0.0001537*T*T;
+  const Mr=M*rad;
+  let C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(Mr)+(0.019993-0.000101*T)*Math.sin(2*Mr)+0.000289*Math.sin(3*Mr);
+  let th=L0+C; const Om=(125.04-1934.136*T)*rad; th+=-0.00569-0.00478*Math.sin(Om);
+  return ((th%360)+360)%360;
+}
+function _newMoonJST(k){ const td=_newMoonTD(k); return td-_deltaT(td)+9/24; }
+function _solarTermUT(ap,ang){ let jd=ap; for(let i=0;i<8;i++){ const lo=_sunLong(jd); let d=((ang-lo+540)%360)-180; jd+=d*(365.2422/360);} return jd-_deltaT(jd); }
+function _civilDay(j){ return Math.floor(j+0.5); }
+function _monthStartK(j){ const cd=_civilDay(j); let k=Math.round((j-9/24-2451550.09766)/29.530588861); while(_civilDay(_newMoonJST(k))>cd)k--; while(_civilDay(_newMoonJST(k+1))<=cd)k++; return k; }
+function _jdToGY(j){ return new Date((j-9/24-2440587.5)*86400000).getUTCFullYear(); }
+function _wsJST(gy){ return _solarTermUT(2451545+365.2422*(gy-2000)+355,270)+9/24; }
+function _hasZhongqi(k){ const a=_newMoonJST(k),b=_newMoonJST(k+1); const la=_sunLong(a-9/24); const nd=(Math.floor(la/30)+1)*30,tg=((nd%360)+360)%360; const ap=(a-9/24)+(((nd-la)%360+360)%360)*(365.2422/360); const t=_solarTermUT(ap,tg)+9/24; return t>=a&&t<b; }
+const _lunarCache={};
+function _lunarMD(date){
+  const key=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+  if(_lunarCache[key]) return _lunarCache[key];
+  const j=_toJD(date)+9/24, cd=_civilDay(j);
+  const kCur=_monthStartK(j), day=cd-_civilDay(_newMoonJST(kCur))+1;
+  const gy=_jdToGY(_newMoonJST(kCur));
+  let ws=_wsJST(gy), k11=_monthStartK(ws);
+  if(_civilDay(_newMoonJST(k11))>_civilDay(_newMoonJST(kCur))){ ws=_wsJST(gy-1); k11=_monthStartK(ws); }
+  let cur=11,leap=false,k=k11;
+  while(k<kCur){ if(_hasZhongqi(k+1)){cur=cur%12+1;leap=false;} else leap=true; k++; }
+  return _lunarCache[key]={month:cur,day,leap};
+}
+function getLunarMonthDay(date){ const l=_lunarMD(date); return [l.month, l.day]; }
 function getRokuyo(d=new Date()){
   const[lm,ld]=getLunarMonthDay(d);
   return ROKUYO[((lm+ld)%6+6)%6];
 }
 
-// ── Datetime display ──
 function updateDT(){
   const n=new Date();
   const days=['日','月','火','水','木','金','土'];
@@ -476,7 +467,6 @@ function updateDT(){
 }
 updateDT(); setInterval(updateDT,30000);
 
-// ── Game selector init ──
 (function(){
   const c=document.getElementById('game-selector');
   GAMES.forEach(g=>{
@@ -491,7 +481,6 @@ updateDT(); setInterval(updateDT,30000);
   });
 })();
 
-// ── Tab switch ──
 function switchTab(id,btn){
   document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
@@ -500,13 +489,10 @@ function switchTab(id,btn){
   if(id==='calendar')renderCalendar();
 }
 
-// ── Location ──
-// ── Location helpers ──
 function setLocStatus(msg, color='var(--muted)') {
   const el = document.getElementById('loc-status');
   if (el) { el.textContent = msg; el.style.color = color; }
 }
-
 async function applyCoords(lat, lon, sourceName) {
   coords = { lat, lon };
   setLocStatus('📍 住所を解析中...', 'var(--gold)');
@@ -529,28 +515,22 @@ async function applyCoords(lat, lon, sourceName) {
   showRestaurantSearch();
   setTimeout(() => searchRestaurants(), 600);
 }
-
 function getLocation() {
   const btn = document.getElementById('loc-btn');
   setLocStatus('📡 位置情報を要求中...', 'var(--gold)');
   btn.textContent = '📡 取得中...'; btn.disabled = true;
-
   if (!navigator.geolocation) {
     setLocStatus('⚠️ このブラウザはGPSに非対応です。手動入力をお使いください。', '#FF8080');
     btn.textContent = '📡 GPSで現在地を自動取得'; btn.disabled = false; return;
   }
-
-  // HTTPS チェック
   if (location.protocol === 'file:') {
     setLocStatus('⚠️ ローカルファイルではGPSが使えません。住所を手動入力してください。', '#FF8080');
     btn.textContent = '📡 GPSで現在地を自動取得'; btn.disabled = false; return;
   }
-
   const timeout = setTimeout(() => {
     setLocStatus('⏱️ GPSがタイムアウト。手動入力をお試しください。', '#FF8080');
     btn.textContent = '📡 GPSで現在地を自動取得'; btn.disabled = false;
   }, 12000);
-
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
       clearTimeout(timeout);
@@ -571,23 +551,18 @@ function getLocation() {
     { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
   );
 }
-
-// 手動住所入力→Nominatim geocoding
 async function geocodeManual() {
   const input = document.getElementById('manual-addr-input').value.trim();
   if (!input) { setLocStatus('⚠️ 住所・施設名を入力してください', '#FF8080'); return; }
-
   setLocStatus('🔍 住所を検索中...', 'var(--gold)');
   try {
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(input + ' 日本')}&format=json&limit=1&accept-language=ja`;
     const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
     const data = await r.json();
-
     if (!data || data.length === 0) {
       setLocStatus('⚠️ 「' + input + '」が見つかりませんでした。別のキーワードを試してください。', '#FF8080');
       return;
     }
-
     const place = data[0];
     const lat = parseFloat(place.lat);
     const lon = parseFloat(place.lon);
@@ -596,27 +571,19 @@ async function geocodeManual() {
     document.getElementById('situation').value = input;
     await applyCoords(lat, lon, input);
     setLocStatus(`✅ 「${displayName}」付近で設定しました`, 'var(--green)');
-
   } catch (err) {
     setLocStatus('❌ 住所検索に失敗しました。ネットワーク接続を確認してください。', '#FF8080');
   }
 }
-
 function showErr(msg){const e=document.getElementById('errmsg');e.textContent=msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),4000)}
 
-// ============================================
-//  CORE DIVINATION ENGINE — 全15種占術
-// ============================================
-
-// 西洋占星術スコア（星座×日付）
+// ── CORE DIVINATION ENGINE ──
 const ZODIAC_BASE={牡羊座:85,牡牛座:78,双子座:82,蟹座:76,獅子座:88,乙女座:80,天秤座:83,蠍座:79,射手座:86,山羊座:77,水瓶座:84,魚座:81};
 function westernScore(seed){const z=document.getElementById('zodiac').value;const base=ZODIAC_BASE[z]||80;return Math.min(99,Math.max(45,Math.round(base+(sRand(seed*3)-0.5)*30)))}
 
-// タロット
 const TAROT=[{n:'太陽',s:95,i:'☀️',msg:'明るい成功と喜び。積極的な行動が吉。'},{n:'星',s:85,i:'⭐',msg:'希望と理想。夢に向かって進む好機。'},{n:'運命の輪',s:80,i:'☸️',msg:'転換期。流れに乗って大きく飛躍。'},{n:'力',s:82,i:'🦁',msg:'内なる力が覚醒。粘り強さが実を結ぶ。'},{n:'魔術師',s:88,i:'🪄',msg:'才能全開。アイデアを即行動に移すべき日。'},{n:'女帝',s:86,i:'👑',msg:'豊かさと創造力。美と愛が引き寄せられる。'},{n:'世界',s:92,i:'🌍',msg:'完成と達成。大きな目標が実現する予兆。'},{n:'月',s:68,i:'🌙',msg:'直感を信じて。見えないものに注意。'},{n:'塔',s:55,i:'🗼',msg:'変化の予兆。固執を手放すと新たな道が。'},{n:'審判',s:75,i:'📯',msg:'再生と目覚め。過去を清算して前進。'},{n:'高等女司祭',s:83,i:'📜',msg:'智慧と神秘。内省することで答えを得る。'},{n:'皇帝',s:87,i:'⚔️',msg:'権威と安定。リーダーシップを発揮する日。'}];
 function tarotDraw(seed){return TAROT[Math.floor(sRand(seed*7)*TAROT.length)]}
 
-// 数秘術（命数計算）
 function calcNumerology(bdate){
   const s=bdate.replace(/-/g,'').split('').reduce((a,c)=>a+parseInt(c),0);
   let n=s;while(n>9&&n!==11&&n!==22&&n!==33){const ds=String(n).split('').map(Number);n=ds.reduce((a,b)=>a+b,0)}
@@ -625,11 +592,9 @@ function calcNumerology(bdate){
 const NUMER_MSG={1:'リーダーシップの日。決断と行動で運気UP。',2:'協調と直感の日。パートナーとの絆が強まる。',3:'創造と表現の日。アイデアと笑いが幸運を呼ぶ。',4:'安定と基盤の日。地道な努力が必ず報われる。',5:'変化と自由の日。新しい冒険に踏み出すとき。',6:'愛と調和の日。家族・仲間との絆が深まる。',7:'直感と探求の日。内省と学びで智慧が開花。',8:'力と豊かさの日。ビジネスと金運が絶好調。',9:'完成と慈愛の日。与えることで全てが返ってくる。',11:'直感の日。スピリチュアルな感受性が最大化。',22:'マスターの日。大きなビジョンを形にする力。',33:'奉仕の日。他者への愛と貢献が最大の幸運。'};
 function numerScore(seed,nm){const base={1:80,2:75,3:85,4:78,5:88,6:82,7:79,8:87,9:83,11:90,22:95,33:92};return Math.min(99,Math.max(45,Math.round((base[nm]||80)+(sRand(seed*11)-0.5)*20)))}
 
-// ルーン
 const RUNES=[{n:'フェフ',i:'ᚠ',mean:'富と繁栄',s:88},{n:'アンスズ',i:'ᚨ',mean:'知恵と伝達',s:82},{n:'ソウル',i:'ᛊ',mean:'勝利の太陽',s:90},{n:'ティール',i:'ᛏ',mean:'正義と勇気',s:78},{n:'ウル',i:'ᚢ',mean:'力と成長',s:85},{n:'ハガル',i:'ᚺ',mean:'変革と再生',s:65},{n:'ゲボ',i:'ᚷ',mean:'贈り物と絆',s:87},{n:'ナウズ',i:'ᚾ',mean:'制約の中の知恵',s:72},{n:'イング',i:'ᛜ',mean:'豊穣と完成',s:89},{n:'ラグズ',i:'ᛚ',mean:'流れと直感',s:80}];
 function runeDraw(seed){return RUNES[Math.floor(sRand(seed*13)*RUNES.length)]}
 
-// 九星気学
 const KYUSEI_LUCK={一白水星:[.7,.9,.65,.8,.85,.75,.7,.9,.6,.8,.85,.7],二黒土星:[.85,.7,.9,.65,.8,.85,.75,.7,.9,.6,.8,.85],三碧木星:[.8,.85,.7,.9,.65,.8,.85,.75,.7,.9,.6,.8],四緑木星:[.6,.8,.85,.7,.9,.65,.8,.85,.75,.7,.9,.6],五黄土星:[.9,.6,.8,.85,.7,.9,.65,.8,.85,.75,.7,.9],六白金星:[.85,.75,.7,.9,.6,.8,.85,.7,.9,.65,.8,.85],七赤金星:[.7,.9,.6,.8,.85,.75,.7,.9,.65,.8,.85,.7],八白土星:[.65,.8,.85,.75,.7,.9,.6,.8,.85,.7,.9,.65],九紫火星:[.75,.7,.9,.6,.8,.85,.75,.7,.9,.65,.8,.85]};
 function kyuseiScore(seed){
   const ky=document.getElementById('kyusei')?.value||'六白金星';
@@ -638,7 +603,6 @@ function kyuseiScore(seed){
   return Math.min(99,Math.max(45,Math.round(base*100+(sRand(seed*17)-0.5)*18)));
 }
 
-// 四柱推命
 const SHISHU_HEAVENLY=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const SHISHU_EARTHLY=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 function shichuScore(seed){return Math.min(99,Math.max(45,Math.round(76+(sRand(seed*19)-0.5)*26)))}
@@ -652,11 +616,7 @@ function shichuMsg(seed){
   return msgs[Math.floor(sRand(seed*31)*msgs.length)];
 }
 
-// ═══════════════════════════════════════════════════════
-// 紫微斗数 完全実装
-// ═══════════════════════════════════════════════════════
-
-// ── 旧暦変換テーブル (1990-2030) ──
+// ── 紫微斗数 完全実装 ──
 const LUNAR_DATA = {
   1990:{sf:[1,27],m:[30,29,30,29,30,29,30,30,29,30,29,30],lp:null},
   1991:{sf:[2,15],m:[30,29,30,29,30,30,29,30,29,30,29,30],lp:null},
@@ -701,8 +661,14 @@ const LUNAR_DATA = {
   2030:{sf:[2,3], m:[30,29,30,30,29,29,30,29,29,30,29,30],lp:null},
 };
 
-// 新暦→旧暦変換
+// 新暦→旧暦変換（パッチ②: メモ化）
 function solarToLunar(sy, sm, sd) {
+  const _C = solarToLunar._c || (solarToLunar._c = {});
+  const _k = sy + '_' + sm + '_' + sd;
+  if (_k in _C) return _C[_k];
+  return _C[_k] = _solarToLunarImpl(sy, sm, sd);
+}
+function _solarToLunarImpl(sy, sm, sd) {
   const date = new Date(sy, sm-1, sd);
   let ly = sy;
   let d = LUNAR_DATA[ly];
@@ -715,35 +681,20 @@ function solarToLunar(sy, sm, sd) {
   for(let i=0; i<d.m.length; i++){
     if(rem < d.m[i]) { isLeap = (leapM && i === leapM); return {year:ly, month:lm, day:rem+1, isLeap}; }
     rem -= d.m[i];
-    if(leapM && i === leapM - 1) lm--; // 閏月の次は同じ月
+    if(leapM && i === leapM - 1) lm--;
     lm++;
   }
   return {year:ly, month:lm, day:rem+1, isLeap:false};
 }
 
-// ── 定数 ──
 const ZW_STEMS   = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const ZW_BRANCHES= ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const ZW_STEM_ELEM = {甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
-
-// 五虎遁年（寅月の天干: 甲己→丙, 乙庚→戊, 丙辛→庚, 丁壬→壬, 戊癸→甲）
-const TIGER_STEM_IDX = [2,4,6,8,0,2,4,6,8,0]; // 年干index→寅月天干index
-
-// 納音五行局 (30ペア: 甲子乙丑=4, 丙寅丁卯=6, 戊辰己巳=3, ...)
+const TIGER_STEM_IDX = [2,4,6,8,0,2,4,6,8,0];
 const NAYIN_BUREAU = [4,6,3,5,4,6,2,5,4,3,2,5,6,3,2,4,6,3,5,4,6,2,5,4,3,2,5,6,3,2];
-
-// 14主星の配置: 紫微系(紫微からの相対) & 天府系(天府からの相対)
-// 紫微系: 紫微(0),天機(-1),空,太陽(+2),武曲(+3),天同(+4),空,空,廉貞(+7)
-// 天府系: 天府(0),太陰(+1),貪狼(+2),巨門(+3),天相(+4),天梁(+5),七殺(+6),空,空,空,空,破軍(+11)
-// ★【修正1】紫微系オフセット修正: 紫微から時計方向（地支逆順）に配置
-// 天機(-1), 太陽(-3), 武曲(-4), 天同(-5), 廉貞(-8)
 const ZIWEI_SYSTEM = { 紫微星:0, 天機星:-1, 太陽星:-3, 武曲星:-4, 天同星:-5, 廉貞星:-8 };
 const TIANFU_SYSTEM= { 天府星:0, 太陰星:1, 貪狼星:2, 巨門星:3, 天相星:4, 天梁星:5, 七殺星:6, 破軍星:10 };
-
-// 宮名（命宮から時計回り）
 const ZW_PALACE_NAMES = ['命宮','兄弟宮','夫妻宮','子女宮','財帛宮','疾厄宮','遷移宮','僕役宮','官禄宮','田宅宮','福徳宮','父母宮'];
-
-// 主星の特性・解説
 const ZW_STAR_INFO = {
   紫微星:{cat:'吉',elem:'土',desc:'帝王星。高い品格・権威・リーダーシップを示す最強の主星。'},
   天機星:{cat:'吉',elem:'木',desc:'智謀星。頭脳明晰・変化適応力・計画性に優れる。'},
@@ -760,8 +711,6 @@ const ZW_STAR_INFO = {
   七殺星:{cat:'凶',elem:'金',desc:'将星。突破力・勇気・決断力。独立・開拓に強い破壊と創造。'},
   破軍星:{cat:'凶',elem:'水',desc:'耗星。変革・開拓・先鋒。前例を打ち破る力と消耗リスク。'},
 };
-
-// 副星の特性
 const ZW_SUB_STAR_INFO = {
   左輔:'補佐の吉星。助力・協調・増強効果。',
   右弼:'補佐の吉星。内助の功・裏の援助。',
@@ -775,72 +724,43 @@ const ZW_SUB_STAR_INFO = {
   火星:'煞星。爆発的エネルギー。吉廟で速成、凶廟で波乱。',
   鈴星:'煞星。火星と対を成す。突発的事象。',
 };
-
-// 宮×主星の廟旺陷の運勢スコア（簡略版）
 const PALACE_STAR_SCORE = {
   '命宮_貪狼星':82, '命宮_紫微星':95, '命宮_天同星':78, '命宮_廉貞星':70,
   '命宮_武曲星':85, '命宮_天機星':80, '命宮_太陽星':88, '命宮_天梁星':83,
   '遷移宮_紫微星':90, '財帛宮_武曲星':92, '官禄宮_太陽星':88,
 };
 
-// ────────────────────────────
-// 完全な命盤計算
-// ────────────────────────────
+// 完全な命盤計算（パッチ②: メモ化）
 function calcZiweiChart(bdateStr, btimeStr, gender) {
-  // 生年月日・時刻をパース
+  const _C = calcZiweiChart._c || (calcZiweiChart._c = {});
+  const _k = bdateStr + '|' + btimeStr + '|' + gender;
+  if (_k in _C) return _C[_k];
+  return _C[_k] = _calcZiweiChartImpl(bdateStr, btimeStr, gender);
+}
+function _calcZiweiChartImpl(bdateStr, btimeStr, gender) {
   const parts = bdateStr.split('-');
   const sy = parseInt(parts[0]), sm = parseInt(parts[1]), sd = parseInt(parts[2]);
   const bHour = btimeStr ? parseInt(btimeStr.split(':')[0]) : 6;
-  
-  // 旧暦生年月日
   const lunar = solarToLunar(sy, sm, sd);
   if(!lunar) return null;
   const {year:ly, month:lm, day:ld} = lunar;
-  
-  // 時支index (子=0, 丑=1, ..., 亥=11, 各2時間)
-  // 子:23-1, 丑:1-3, 寅:3-5, 卯:5-7, 辰:7-9, 巳:9-11
-  // 午:11-13, 未:13-15, 申:15-17, 酉:17-19, 戌:19-21, 亥:21-23
   const HOUR_TO_BRANCH = [0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11];
   const hourBranch = HOUR_TO_BRANCH[bHour] ?? 3;
-  
-  // 年干支index
   const yearStemIdx   = ((sy-4)%10+10)%10;
   const yearBranchIdx = ((sy-4)%12+12)%12;
-  
-  // ── 命宮計算 ──
-  // 命宮 = (寅(2) + 月 - 1 - 時支 + 12) % 12
   const mingGong = ((2 + lm - 1 - hourBranch) % 12 + 12) % 12;
-  // 身宮 = (寅(2) + 月 - 1 + 時支) % 12
   const shenGong = ((2 + lm - 1 + hourBranch) % 12 + 12) % 12;
-  
-  // ── 命宮天干 (五虎遁年法) ──
-  const tigerStemIdx = TIGER_STEM_IDX[yearStemIdx]; // 寅月の天干index
-  // 命宮の天干 = (寅月天干 + (命宮地支index - 2 + 12)) % 10
+  const tigerStemIdx = TIGER_STEM_IDX[yearStemIdx];
   const mingGongStemIdx = (tigerStemIdx + ((mingGong - 2 + 12) % 12)) % 10;
-  
-  // ── 五行局 (納音五行) ──
-  // 命宮干支の通し番号(0-59)
   let kanshiN = 0;
   for(let n=0;n<60;n++) { if(n%10===mingGongStemIdx && n%12===mingGong) { kanshiN=n; break; } }
-  const bureau = NAYIN_BUREAU[Math.floor(kanshiN/2)]; // 2/3/4/5/6局
+  const bureau = NAYIN_BUREAU[Math.floor(kanshiN/2)];
   const BUREAU_NAME = {2:'水二局',3:'木三局',4:'金四局',5:'土五局',6:'火六局'};
-  
-  // ★【修正2】紫微星位置（安紫微法・完全正確版）
-  // 起寅時計方向（地支逆順: 寅→丑→子→亥...）で数える
-  // R=0: steps=Q, R奇数: steps=Q+R, R偶数(≠0): steps=Q+R+1
-  // ziweiPos = (寅(2) - steps + 12*k) % 12
   const _q = Math.floor(ld / bureau);
   const _r = ld % bureau;
   const _steps = (_r === 0) ? _q : (_r % 2 === 1) ? _q + _r : _q + _r + 1;
   const ziweiPos = ((2 - _steps) % 12 + 12) % 12;
-  
-  // ── 天府星位置（正確） ──
-  // 関係式: (紫微 + 天府) % 12 = 4 または 16
-  // → 天府 = (4 - 紫微 + 12) % 12
-  // 例: 紫微=戌(10) → 天府=(4-10+12)%12=6=午 ✓
   const tianfuPos = (4 - ziweiPos + 12) % 12;
-  
-  // ── 14主星配置 ──
   const stars = {};
   for(const [name, offset] of Object.entries(ZIWEI_SYSTEM)) {
     stars[name] = ((ziweiPos + offset) % 12 + 12) % 12;
@@ -848,43 +768,30 @@ function calcZiweiChart(bdateStr, btimeStr, gender) {
   for(const [name, offset] of Object.entries(TIANFU_SYSTEM)) {
     stars[name] = (tianfuPos + offset) % 12;
   }
-  
-  // ── 副星配置 ──
-  // 文昌 (年支で逆行: 戌起子順→逆行)
   const WENCHANG = [8,9,6,5,4,3,2,1,0,11,10,9];
   const wenChang = WENCHANG[yearBranchIdx];
-  // 文曲 (年支で順行)
   const WENQU = [4,3,2,1,0,11,10,9,8,7,6,5];
   const wenQu = WENQU[yearBranchIdx];
-  // 左輔 (辰起旧暦生月順行)
   const zuoFu = (3 + lm) % 12;
-  // 右弼 (戌起旧暦生月逆行)
   const youBi = ((10 - lm) % 12 + 12) % 12;
-  // 天魁・天鉞 (年干別)
-  const TIANKUI = [1,0,11,11,1,0,1,6,3,3]; // 甲=丑...癸=卯
-  const TIANYUE = [7,8,9,9,7,8,7,2,5,5];   // 甲=未...癸=巳
+  const TIANKUI = [1,0,11,11,1,0,1,6,3,3];
+  const TIANYUE = [7,8,9,9,7,8,7,2,5,5];
   const tianKui = TIANKUI[yearStemIdx];
   const tianYue = TIANYUE[yearStemIdx];
-  // 禄存 (年干別)
-  const LUCUN = [2,3,5,6,5,6,8,9,11,0]; // 甲=寅...癸=子
+  const LUCUN = [2,3,5,6,5,6,8,9,11,0];
   const luCun = LUCUN[yearStemIdx];
-  const qingYang = (luCun + 1) % 12; // 擎羊
-  const tuoLuo   = (luCun - 1 + 12) % 12; // 陀羅
-  // 火星 (年支×時支)
+  const qingYang = (luCun + 1) % 12;
+  const tuoLuo   = (luCun - 1 + 12) % 12;
   const HUOXING_BASE = [2,3,2,9,10,2,3,2,2,9,10,2];
   const huoXing = (HUOXING_BASE[yearBranchIdx] + hourBranch) % 12;
-  // 鈴星
   const LINGXING_BASE = [10,9,10,9,9,10,10,9,10,9,9,10];
   const lingXing = (LINGXING_BASE[yearBranchIdx] + hourBranch) % 12;
-  
   const subStars = { 左輔:zuoFu, 右弼:youBi, 文昌:wenChang, 文曲:wenQu,
-    天魁:tianKui, 天鉞:tianYue, 禄存:luCun, 擎羊:qingYang, 陀羅:tuoLuo, 
+    天魁:tianKui, 天鉞:tianYue, 禄存:luCun, 擎羊:qingYang, 陀羅:tuoLuo,
     火星:huoXing, 鈴星:lingXing };
-  
-  // ★【修正3】12宮配置: 命宮から時計方向（地支逆順）に宮を割り当て
   const palaces = [];
   for(let i=0; i<12; i++){
-    const branch = (mingGong - i + 12) % 12;  // ← -i（時計方向）に修正
+    const branch = (mingGong - i + 12) % 12;
     const mainStars = Object.entries(stars).filter(([,p])=>p===branch).map(([n])=>n);
     const auxStars  = Object.entries(subStars).filter(([,p])=>p===branch).map(([n])=>n);
     palaces.push({
@@ -896,7 +803,6 @@ function calcZiweiChart(bdateStr, btimeStr, gender) {
       mainStars, auxStars,
     });
   }
-  
   return {
     lunar, hourBranch, mingGong, shenGong, bureau, bureauName:BUREAU_NAME[bureau],
     ziweiPos, tianfuPos, stars, subStars, palaces,
@@ -907,29 +813,18 @@ function calcZiweiChart(bdateStr, btimeStr, gender) {
   };
 }
 
-// ── 今日の流日宮計算 ──
 function getTodayFlowPalace(chart, todaySolar) {
   const [ty, tm, td] = todaySolar;
   const lunarToday = solarToLunar(ty, tm, td);
   if(!lunarToday || !chart) return null;
-  
-  // 流年宮: 今年の地支（生年を命宮として毎年次の宮へ）
   const flowYearBranch = ((ty - 4) % 12 + 12) % 12;
-  // 流月宮: 流年宮から旧暦月分進む
   const flowMonthBranch = (flowYearBranch + lunarToday.month + 1) % 12;
-  // 流日宮: 四柱推命の日柱地支を使用（正確）
-  // epochからの日数で日柱地支を計算 (2026/2/20=丑=1で検証済み)
   const _ep = Math.floor(Date.now() / 86400000);
   const flowDayBranch = (_ep + 5) % 12;
-  
-  // 流日宮の星
   const mainStars = Object.entries(chart.stars).filter(([,p])=>p===flowDayBranch).map(([n])=>n);
   const auxStars  = Object.entries(chart.subStars).filter(([,p])=>p===flowDayBranch).map(([n])=>n);
-  
-  // 宮名 (命宮からの相対位置)
   const palaceIdx = (flowDayBranch - chart.mingGong + 12) % 12;
   const palaceName = ZW_PALACE_NAMES[palaceIdx];
-  
   return {
     lunarToday, flowYearBranch, flowMonthBranch, flowDayBranch,
     flowYearName:  ZW_BRANCHES[flowYearBranch],
@@ -939,46 +834,34 @@ function getTodayFlowPalace(chart, todaySolar) {
   };
 }
 
-// ── スコア計算 ──
 function ziweiScore(seed) {
   const bdate = document.getElementById('bdate')?.value || '1993-04-14';
   const btime = document.getElementById('btime')?.value || '06:18';
   const chart = calcZiweiChart(bdate, btime, 'male');
   if(!chart) return 74;
-  
   const now = new Date();
   const flow = getTodayFlowPalace(chart, [now.getFullYear(), now.getMonth()+1, now.getDate()]);
   if(!flow) return 74;
-  
-  // 流日宮の主星カテゴリでスコア決定
   const catScore = {吉:85, 中:75, 凶:62};
   const firstStar = flow.mainStars[0];
   const starCat = firstStar ? ZW_STAR_INFO[firstStar]?.cat : '中';
-  
-  // 命宮の主星ボーナス
   const mingMainStar = chart.palaces[0].mainStars[0];
   const mingBonus = mingMainStar ? {紫微星:10,武曲星:8,太陽星:7,貪狼星:5}[mingMainStar] || 0 : 0;
-  
   const base = (catScore[starCat] || 75) + mingBonus;
   return Math.min(99, Math.max(45, Math.round(base + (sRand(seed*37)-0.5)*10)));
 }
 
-// ── メッセージ生成 ──
 function ziweiMsg(seed) {
   const bdate = document.getElementById('bdate')?.value || '1993-04-14';
   const btime = document.getElementById('btime')?.value || '06:18';
   const chart = calcZiweiChart(bdate, btime, 'male');
   if(!chart) return '紫微斗数：命盤計算エラー';
-  
   const now = new Date();
   const flow = getTodayFlowPalace(chart, [now.getFullYear(), now.getMonth()+1, now.getDate()]);
-  
   const mingPalace = chart.palaces[0];
   const mingStarName = mingPalace.mainStars[0] || '';
   const mingStarDesc = ZW_STAR_INFO[mingStarName]?.desc || '';
-  
   let msg = `命宮【${chart.mingGongBranch}・${chart.bureauName}】主星【${mingStarName || 'なし'}】。${mingStarDesc}`;
-  
   if(flow) {
     msg += ` ▶ 今日の流日は【${flow.palaceName}(${flow.flowDayName})】が活性化。`;
     if(flow.mainStars.length > 0) {
@@ -996,38 +879,24 @@ function ziweiMsg(seed) {
   return msg;
 }
 
-// 風水
 const FENGSHUI_DIR=['北','北東','東','南東','南','南西','西','北西'];
 const FENGSHUI_COLOR=['白','青','緑','黄','赤','橙','金','紫'];
 function fengshuiScore(seed){return Math.min(99,Math.max(45,Math.round(73+(sRand(seed*47)-0.5)*26)))}
 function fengshuiDir(seed){return FENGSHUI_DIR[Math.floor(sRand(seed*53)*8)]}
 function fengshuiMsg(seed,dir){return `${dir}の方位に開運エネルギーが集中。${FENGSHUI_COLOR[Math.floor(sRand(seed*59)*8)]}色のアイテムを身に着けると吉。`}
-
-// 0学占い（算命学ベース）
 function zeroScore(seed){return Math.min(99,Math.max(45,Math.round(71+(sRand(seed*61)-0.5)*28)))}
-
-// 姓名判断
 function seimeiScore(){
   const sei=document.getElementById('sei')?.value||'大村';
   const mei=document.getElementById('mei')?.value||'晃平';
-  // 簡略版：文字数×平方でスコア算出
   const strokes=sei.length*7+mei.length*5;
   const base=60+((strokes%40));
   return Math.min(99,Math.max(50,base));
 }
-
-// 血液型
 const BLOOD_DAILY={A型:{msg:'几帳面な本領発揮の日。計画通りに進めると吉。',base:78},B型:{msg:'自由な発想力が炸裂する日。直感を信じて動こう。',base:84},O型:{msg:'大らかなエネルギーが周りを動かす日。リーダーシップ◎',base:82},AB型:{msg:'二面性が好転する日。柔軟な判断が最大の武器。',base:86}};
 function bloodScore(seed){const b=document.getElementById('blood').value;const base=BLOOD_DAILY[b]?.base||80;return Math.min(99,Math.max(45,Math.round(base+(sRand(seed*67)-0.5)*22)))}
-
-// 算命学
 function sanmeiScore(seed){return Math.min(99,Math.max(45,Math.round(75+(sRand(seed*71)-0.5)*24)))}
-
-// 六曜スコア
 const ROKUYO_SCORE={大安:92,赤口:45,先勝:70,友引:75,先負:62,仏滅:38};
 function rokuyoScore(){return ROKUYO_SCORE[getRokuyo()]||65}
-
-// おみくじ
 const OMIKUJI=[{r:'大吉',w:14,col:'#FFD700'},{r:'中吉',w:26,col:'var(--gold)'},{r:'小吉',w:22,col:'#90EE90'},{r:'吉',w:20,col:'#87CEEB'},{r:'末吉',w:11,col:'#DDA0DD'},{r:'凶',w:5,col:'#FF8080'},{r:'大凶',w:2,col:'#FF4444'}];
 const OMIKUJI_MSG={大吉:'万事に最高の運が巡ります。大きな決断・行動・ガチャ全てに吉！',中吉:'全体的に良い流れ。自信を持って進めて下さい。',小吉:'小さな幸せが積み重なる日。着実に前進を。',吉:'良い日です。日常を丁寧に。',末吉:'後半から運気上昇。午後以降の行動が吉。',凶:'今日は慎重に。ガチャは明日以降推奨。',大凶:'万事控えめに。神社参拝でお祓いを。'};
 function drawOmikuji(seed){
@@ -1036,7 +905,6 @@ function drawOmikuji(seed){
   return OMIKUJI[0];
 }
 
-// ── 総合スコア計算 ──
 function computeAll(){
   const seed=combinedSeed();const now=new Date();
   const ws=westernScore(seed);
@@ -1056,31 +924,22 @@ function computeAll(){
   const sms=sanmeiScore(seed);
   const rs=rokuyoScore();
   const omi=drawOmikuji(seed);
-
   const scores=[ws,tarot.s,ns,rune.s,ks,ss,zs,fs,zeros,seimeis,bs,sms,rs];
   const total=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
-
-  // Lucky hours
   const hourBases=[38,32,52,82,79,72,88,91,75,92,85,52];
   const hours=hourBases.map((b,i)=>{
     const sc=Math.min(99,Math.max(30,Math.round(b+(sRand(seed*79+i*83)-0.5)*18)));
     return {time:`${String(i*2).padStart(2,'0')}:00-${String(i*2+2).padStart(2,'0')}:00`,score:sc};
   }).sort((a,b)=>b.score-a.score);
-
-  // Lucky places (location-aware)
   const loc=document.getElementById('situation').value||locName||'宮崎市';
   const placeTypes=[
     {cat:'神社・寺',spots:`${loc}周辺の神社・寺院`,reason:'九星気学の吉方位と重なる聖域。参拝で運気が浄化されます。',dir:fdir},
     {cat:'自然・公園',spots:`${loc}周辺の公園・緑地`,reason:`${tarot.n}のカードが示す「自然のエネルギー」と共鳴する場所。`,dir:FENGSHUI_DIR[(FENGSHUI_DIR.indexOf(fdir)+2)%8]},
     {cat:'カフェ・飲食',spots:`${loc}周辺の飲食店・カフェ`,reason:'風水の水の気が流れ、人との縁と金運が高まるエリア。',dir:FENGSHUI_DIR[(FENGSHUI_DIR.indexOf(fdir)+4)%8]},
   ];
-
-  // Lucky foods
   const bloodFoods={B型:[{n:'うどん・そば',c:'白',t:'ランチ',s:'うどん屋・蕎麦屋',r:'白い食材が六白金星の金気を高め、集中力が持続。'},{n:'鶏料理',c:'黄',t:'夕食',s:'焼き鳥・鶏料理店',r:'干支・酉（鶏）を取り込むことで本来の力が覚醒。'},{n:'いちご系スイーツ',c:'赤',t:'おやつ',s:'カフェ・スイーツ店',r:'赤い食材が牡羊座の火のエネルギーを補給。'}]};
   const zodiac=document.getElementById('zodiac').value;
   const foods=bloodFoods[document.getElementById('blood').value]||bloodFoods['B型'];
-
-  // Verdict
   const verdicts=[
     {min:90,v:'大吉 ✦ 最強の開運日！',col:'#FFD700'},
     {min:80,v:'中吉 ✦ 運気上昇中',col:'var(--gold-light)'},
@@ -1089,21 +948,16 @@ function computeAll(){
     {min:0,v:'末吉 ✦ 慎重な一日を',col:'var(--muted)'}
   ];
   const verdict=verdicts.find(v=>total>=v.min)||verdicts[verdicts.length-1];
-
-  return{total,verdict,ws,tarot,nm,ns,rune,ks,ss,ssMsg:shichuMsg(seed),zs,zsMsg:ziweiMsg(seed),fs,fdir,fsMsg:fengshuiMsg(seed,fdir),zeros,seimeis,bs,sms,rs,omi,hours,places:placeTypes,foods,seed,nm,now};
+  return{total,verdict,ws,tarot,nm,ns,rune,ks,ss,ssMsg:shichuMsg(seed),zs,zsMsg:ziweiMsg(seed),fs,fdir,fsMsg:fengshuiMsg(seed,fdir),zeros,seimeis,bs,sms,rs,omi,hours,places:placeTypes,foods,seed,now};
 }
 function var_green(){return '#50C878'}
 
-// ── Render: Fortune ──
 function runFortune(){
   const d=computeAll();
   const scoreColor=s=>s>=90?'#FFD700':s>=80?'var(--gold-light)':s>=70?'var(--green)':s>=60?'#87CEEB':'var(--muted)';
-  const stars=s=>'★'.repeat(Math.round(s/20))+'☆'.repeat(5-Math.round(s/20));
   const topHours=d.hours.slice(0,4);
   const situation=document.getElementById('situation').value||locName;
   const fmeals=getLuckyMeals(d.seed, situation);
-
-  // Divination messages
   const divs=[
     {n:'西洋占星術',s:d.ws,msg:`${document.getElementById('zodiac').value}：今日は月の位置が火星と調和。${d.tarot.msg}`},
     {n:'タロット',s:d.tarot.s,msg:`「${d.tarot.n}」${d.tarot.i} — ${d.tarot.msg}`},
@@ -1113,14 +967,15 @@ function runFortune(){
     {n:'四柱推命',s:d.ss,msg:d.ssMsg},
     {n:'紫微斗数',s:d.zs,msg:d.zsMsg,extra:'chart'},
     {n:'風水',s:d.fs,msg:d.fsMsg},
+    {n:'0学占い',s:d.zeros,msg:`本日の支配星が運命周期と調和。${d.zeros>=80?'大運の波に乗る好日':'穏やかに整えると吉'}。`},
+    {n:'算命学',s:d.sms,msg:`日干・乙（木）と本日の干支の陰陽バランスが${d.sms>=80?'好調。才能が開花する日':'安定。着実な歩みが吉'}。`},
+    {n:'姓名判断',s:d.seimeis,msg:`姓名の画数バランスが今日の天運と${d.seimeis>=75?'好相性':'安定相性'}。地格・天格が後押し。`},
     {n:'血液型占い',s:d.bs,msg:`${document.getElementById('blood').value}：${BLOOD_DAILY[document.getElementById('blood').value]?.msg||'本来の力が発揮される日。'}`},
     {n:'六曜',s:d.rs,msg:`${getRokuyo()}：${ROKUYODESC[getRokuyo()]||''}`},
   ];
-
   const circumference=2*Math.PI*54;
   const dash=circumference*(d.total/100);
   const gap=circumference-dash;
-
   let html=`
   <div class="score-wrap">
     <div class="score-ring">
@@ -1140,7 +995,6 @@ function runFortune(){
     <div class="verdict" style="color:${d.verdict.col}">${d.verdict.v}</div>
     <div style="font-size:.7rem;color:var(--muted)">${new Date().getMonth()+1}月${new Date().getDate()}日 ✦ ${situation} ✦ ${getRokuyo()}</div>
   </div>
-
   <div class="rc c-time">
     <div class="ch"><div class="ci">⏰</div><div><div class="ct">ラッキータイム</div><div class="cs">運気ピーク時間帯 TOP4</div></div></div>
     <div class="tgrid">${topHours.map(h=>`
@@ -1151,14 +1005,12 @@ function runFortune(){
       </div>`).join('')}
     </div>
   </div>
-
   <div class="rc c-place" id="lucky-spot-card">
     <div class="ch"><div class="ci">📍</div><div><div class="ct">ラッキースポット</div><div class="cs" id="spot-card-sub">周辺の開運スポットを検索中...</div></div></div>
     <div id="lucky-spot-results">
       <div class="spot-loading">✨ 周辺スポットを取得中...</div>
     </div>
   </div>
-
   <div class="rc c-food">
     <div class="ch"><div class="ci">🍽️</div><div><div class="ct">今日のラッキーフード</div><div class="cs">${isAeonMiyazaki(situation)?'昼食：イオンモール宮崎の飲食店':'朝食・昼食・夕食・おやつ 全占術連動'}</div></div></div>
     ${[
@@ -1177,7 +1029,6 @@ function runFortune(){
       </div>
     </div>`).join('')}
   </div>
-
   <div class="rc c-div">
     <div class="ch"><div class="ci">🔮</div><div><div class="ct">占術別詳細</div><div class="cs">全占術スコア & メッセージ</div></div></div>
     ${divs.map(dv=>`
@@ -1188,7 +1039,6 @@ function runFortune(){
       ${dv.extra==='chart'?`<button onclick="showZiweiChart()" style="margin-top:8px;padding:5px 12px;border:1px solid var(--gold);background:transparent;color:var(--gold);border-radius:6px;font-size:.72rem;cursor:pointer">🌟 命盤詳細を見る</button>`:''}
     </div>`).join('')}
   </div>
-
   <div class="rc" style="background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(45,27,94,.3))">
     <div class="ch"><div class="ci">📿</div><div><div class="ct">おみくじ</div></div></div>
     <div style="text-align:center;padding:10px 0">
@@ -1196,22 +1046,17 @@ function runFortune(){
       <div style="font-size:.82rem;color:var(--text);margin-top:10px;line-height:1.8">${OMIKUJI_MSG[d.omi.r]||''}</div>
     </div>
   </div>
-
   <div class="li-grid">
     <div class="li-item"><div class="li-icon">🎨</div><div><div class="li-cat">ラッキーカラー</div><div class="li-name">${getLuckyColor(d.seed)}</div></div></div>
     <div class="li-item"><div class="li-icon">🔢</div><div><div class="li-cat">ラッキーナンバー</div><div class="li-name">${getLuckyNumbers(d.seed)}</div></div></div>
     <div class="li-item"><div class="li-icon">💎</div><div><div class="li-cat">ラッキーストーン</div><div class="li-name">${getLuckyStone(d.seed)}</div></div></div>
     <div class="li-item"><div class="li-icon">🌿</div><div><div class="li-cat">ラッキーアイテム</div><div class="li-name">${getLuckyItem(d.seed)}</div></div></div>
   </div>`;
-
   const div=document.getElementById('res-fortune');div.innerHTML=html;
   div.scrollIntoView({behavior:'smooth',block:'start'});
-
-  // ラッキースポット取得（非同期）
   fetchLuckySpots(d.seed, d.fdir);
 }
 
-// ── Lucky extras ──
 const COLORS=['ゴールド','シルバー','ロイヤルブルー','ルビーレッド','エメラルド','パープル','ローズゴールド','コバルト','アイボリー','ティール'];
 const STONES=['ルビー','アメジスト','シトリン','アクアマリン','ラピスラズリ','ローズクォーツ','タイガーアイ','エメラルド','ガーネット','ムーンストーン'];
 const ITEMS=['水晶球','羽根のアクセサリー','金色のコイン','天然石','白い花','鈴','御守り','四つ葉のクローバー','竹炭','ドライフラワー'];
@@ -1220,7 +1065,6 @@ function getLuckyNumbers(s){const r=sRandArr(s*97,3);return r.map(x=>Math.floor(
 function getLuckyStone(s){return STONES[Math.floor(sRand(s*101)*STONES.length)]}
 function getLuckyItem(s){return ITEMS[Math.floor(sRand(s*103)*ITEMS.length)]}
 
-// ── Render: Gacha ──
 const GACHA_LUCKY={
   ウマ娘:{base:.95,reason:'干支・酉（馬）×牡羊座の勢いが絶好調。'},
   ブルアカ:{base:.92,reason:'学園エネルギーが今日の知性運と共鳴。'},
@@ -1285,7 +1129,6 @@ const PULL_ROUTINES=[
   'スマホを額に当て3秒 → 感謝の気持ちを込めて → そっと画面をタップ',
   '東の方角を向き → 深呼吸2回 → 笑顔で引く（表情が運気を決める）',
 ];
-
 function runGacha(){
   const seed=combinedSeed();const games=Array.from(selGames);
   if(games.length===0){showErr('ゲームを1つ以上選択してください');return}
@@ -1294,29 +1137,24 @@ function runGacha(){
     const sc=Math.min(99,Math.max(30,Math.round(info.base*100+(sRand(seed*107+i*113)-0.5)*20)));
     return{game:g,score:sc,reason:info.reason,stars:Math.round(sc/20)};
   }).sort((a,b)=>b.score-a.score);
-
   const top=ranked.slice(0,5);const worst=ranked[ranked.length-1];
   const routine=PULL_ROUTINES[Math.floor(sRand(seed*127)*PULL_ROUTINES.length)];
-  const bestTime=document.getElementById('res-fortune').querySelector('.trange')?.textContent||'14:00-16:00';
   const budget=document.getElementById('budget').value;
-
   const getPull=(sc,i)=>{
     if(i===0&&sc>=85)return{t:'10連推奨',c:'rec'};
     if(sc>=75)return{t:'単発可',c:''};
     if(sc>=60)return{t:'様子見',c:''};
     return{t:'見送り推奨',c:'ng'};
   };
-
   const d=computeAll();
   const gachaMsg=`${new Date().getMonth()+1}月${new Date().getDate()}日のガチャ総合運：${d.total>=80?'絶好調！積極的に引きましょう':d.total>=70?'良好。吉時間帯を狙えば◎':d.total>=60?'普通。無理な連続引きは控えめに':'やや控えめ。石は温存がおすすめ'}。予算「${budget}」での運用が最適。`;
-
   let html=`
   <div class="c-msg">${gachaMsg}</div>
   <div class="rc c-gacha">
     <div class="ch"><div class="ci">🎰</div><div><div class="ct">本日のガチャランキング</div><div class="cs">引くべきゲーム TOP${Math.min(5,top.length)}</div></div></div>
     ${top.map((g,i)=>{const pull=getPull(g.score,i);return`
     <div class="gi ${i===0?'t1':i===1?'t2':i===2?'t3':''}">
-      <div class="grb ${i===0?'b1':i===1?'b2':i===2?'b3':'bn'}">${g.stars===5?'👑':g.rank||i+1}</div>
+      <div class="grb ${i===0?'b1':i===1?'b2':i===2?'b3':'bn'}">${g.stars===5?'👑':i+1}</div>
       <div class="ginfo">
         <div class="gname">${i+1}. ${g.game}</div>
         <div class="greason">${g.reason}</div>
@@ -1334,25 +1172,19 @@ function runGacha(){
     <div class="ch"><div class="ci">✨</div><div><div class="ct">今日のガチャ前ルーティン</div></div></div>
     <div style="font-size:.85rem;line-height:1.9">${routine}</div>
   </div>`;
-
   const div=document.getElementById('res-gacha');div.innerHTML=html;
   div.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ── Render: Daily ──
 const ANISONGS=[
-  // 響け！ユーフォニアム
   {t:'DREAM SOLISTER',ar:'TRUE',an:'響け！ユーフォニアム',r:'麗奈の情熱が今日の運気を後押しします。音楽の純粋な力が牡羊座の行動力と共鳴。',e:'情熱と誠実さのエネルギー'},
   {t:'青春のうた',ar:'TRUE',an:'響け！ユーフォニアム3',r:'麗奈と久美子の最終章。純粋な心が最大の開運ツール。目標に向かって突き進む日。',e:'純粋な愛と誠実のエネルギー'},
   {t:'みんなのきもち',ar:'TRUE',an:'響け！ユーフォニアム2',r:'仲間との絆が最大化する日。音楽の神聖なエネルギーが七赤金星の社交運を高める。',e:'絆と調和のエネルギー'},
-  // Fate
   {t:'oath sign',ar:'LiSA',an:'Fate/Zero',r:'契約の時。今日の高い勝負運にふさわしい一曲。英霊の力が牡羊座の決断を後押し。',e:'決意と覚悟のエネルギー'},
   {t:'Brave Shine',ar:'Aimer',an:'Fate/stay night [UBW]',r:'輝く勇気が今日の行動力を引き出す。金四局の武曲星と完全に共鳴。',e:'勇気と輝きのエネルギー'},
   {t:'カラリ',ar:'Aimer',an:'Fate/stay night HF',r:'運命を受け入れる強さ。今日の転換期に最適な一曲。',e:'運命と強さのエネルギー'},
-  // まどマギ
   {t:'Connect',ar:'ClariS',an:'魔法少女まどか☆マギカ',r:'絆のエネルギーが出会い運を高めます。希望の光が運気を照らす。',e:'絆と希望のエネルギー'},
   {t:'君の銀の庭',ar:'Kalafina',an:'魔法少女まどか☆マギカ',r:'魔法の銀色のエネルギーが七赤金星の金の気と調和。深い直感力が冴える日。',e:'神秘と直感のエネルギー'},
-  // その他アニメ
   {t:'シュガーソングとビターステップ',ar:'UNISON SQUARE GARDEN',an:'血界戦線',r:'疾走感が武曲星の活力を刺激する日に最適。躍動と前進のリズム。',e:'躍動と自由のエネルギー'},
   {t:'ブルーバード',ar:'いきものがかり',an:'NARUTO',r:'B型の自由魂が羽ばたく日にぴったり。空高く飛翔する一曲。',e:'自由と飛翔のエネルギー'},
   {t:'残酷な天使のテーゼ',ar:'高橋洋子',an:'新世紀エヴァンゲリオン',r:'使命感が高まる日。自分の可能性を信じて飛び立て。',e:'使命と再生のエネルギー'},
@@ -1371,13 +1203,12 @@ const ANISONGS=[
   {t:'光るなら',ar:'Goose house',an:'四月は君の嘘',r:'音楽と感性が開花する日。今日の美の気が最高潮。',e:'美と感性のエネルギー'},
   {t:'君嘘ラプソディ',ar:'安済知佳・種田梨沙・茅野愛衣',an:'四月は君の嘘',r:'安済知佳さん出演作品。感情が豊かに溢れる日。',e:'感情と音楽のエネルギー'},
 ];
-// ── 4食ラッキーフード定義 ──
 const LUCKY_MEALS = {
   breakfast: [
     {n:'納豆ご飯（コンビニ・スーパー）',e:'🍚',r:'発酵食品の気が免疫力と金運を高める朝食。七赤金星の活力補給に最適。',src:'コンビニ・スーパー'},
     {n:'バナナヨーグルト（コンビニ・スーパー）',e:'🍌',r:'黄色い食材が武曲星の金運を呼ぶ朝食。手軽に開運エネルギーを摂取。',src:'コンビニ・スーパー'},
     {n:'卵かけご飯（自炊）',e:'🥚',r:'黄色い玉子が今日の数秘エネルギーと共鳴。頭脳を活性化する朝食。',src:'スーパー・自炊'},
-    {n:'ローソン クロワッサン＋カフェラテ',e:'☕',r:'金色のバターがかり×黄金のカフェラテで朝から開運モード全開。',src:'ローソン'},
+    {n:'ローソン クロワッサン＋カフェラテ',e:'☕',r:'金色のバター×黄金のカフェラテで朝から開運モード全開。',src:'ローソン'},
     {n:'セブンイレブン 金の食パントースト（自炊）',e:'🍞',r:'金という字が入った食材で武曲星の金気を朝から取り込む。',src:'セブンイレブン'},
     {n:'ファミマ ちぎれるパン',e:'🥐',r:'柔らかい食感でストレスが和らぐ。牡羊座の頑張り屋さんへの朝の休息。',src:'ファミリーマート'},
     {n:'みそ汁＋ご飯（コンビニ）',e:'🍱',r:'和の発酵気が今日の九星気学の吉気を呼び込む。体の内側から運気UP。',src:'コンビニ'},
@@ -1421,13 +1252,9 @@ const LUCKY_MEALS = {
     {n:'コーヒーゼリー（コンビニ）',e:'☕',r:'黒い食材が水の気を取り込む。木三局の流動エネルギーと調和。集中力UP。',src:'コンビニ'},
   ],
 };
-
-// 場所がイオンモール宮崎かどうかを判定
 function isAeonMiyazaki(loc) {
   return loc && (loc.includes('イオン') || loc.includes('aeon') || loc.includes('Aeon'));
 }
-
-// 今日の運気seedからラッキーミールを選択
 function getLuckyMeals(seed, loc) {
   const r = (arr, s) => arr[Math.floor(sRand(s) * arr.length)];
   const lunch = isAeonMiyazaki(loc) ? r(LUCKY_MEALS.lunch_aeon, seed*137) : r(LUCKY_MEALS.lunch_default, seed*137);
@@ -1438,8 +1265,6 @@ function getLuckyMeals(seed, loc) {
     snack: r(LUCKY_MEALS.snack, seed*143),
   };
 }
-
-// 旧FOODS配列（互換性のため維持）
 const FOODS = LUCKY_MEALS.lunch_default;
 const BOOKS=[
   {t:'影響力の武器',a:'ロバート・B・チャルディーニ',g:'心理学・マーケティング',sk:'発信力・傾聴力',r:'販売8年のプロとして、説得の心理を体系的に学ぶ一冊。顧客対応が格段にレベルアップ。'},
@@ -1450,23 +1275,19 @@ const BOOKS=[
   {t:'夢をかなえるゾウ',a:'水野敬也',g:'小説・自己啓発',sk:'主体性・向上心',r:'面白くて実践的。酉年B型の行動パターンと一致する成長法則が詰まっています。'},
   {t:'ブルーピリオド',a:'山口つばさ',g:'マンガ・芸術',sk:'創造力・自己表現',r:'「好きなことを仕事にする覚悟」を問う作品。転職・独立の迷いに答えを与えてくれる。'},
 ];
-
 function runDaily(){
   const seed=combinedSeed();
   const song=ANISONGS[Math.floor(sRand(seed*131)*ANISONGS.length)];
   const loc = document.getElementById('situation')?.value || locName || '宮崎市 イオンモール';
   const meals = getLuckyMeals(seed, loc);
   const book=BOOKS[Math.floor(sRand(seed*139)*BOOKS.length)];
-  const d=computeAll();
   const mantras=['今日の私は無限の可能性を持っている','運気の波に乗り、全てを引き寄せる','ありがとうが奇跡を呼ぶ','私は今日も輝いている','すべては最善の方向に向かっている'];
   const mantra=mantras[Math.floor(sRand(seed*141)*mantras.length)];
-
   let html=`
   <div style="text-align:center;padding:16px;margin-bottom:14px;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(139,92,246,.08));border:1px solid rgba(201,168,76,.2);border-radius:14px">
     <div style="font-family:'Zen Old Mincho',serif;font-size:1.05rem;color:var(--gold-light);letter-spacing:.08em;margin-bottom:5px">"${mantra}"</div>
     <div style="font-size:.66rem;color:var(--muted)">今日の開運マントラ</div>
   </div>
-
   <div class="rc c-daily">
     <div class="ch"><div class="ci">🎵</div><div><div class="ct">今日のアニソン</div><div class="cs">運気が上がる一曲</div></div></div>
     <div class="ditem">
@@ -1480,7 +1301,6 @@ function runDaily(){
       </div>
     </div>
   </div>
-
   <div class="rc c-food">
     <div class="ch"><div class="ci">🍽️</div><div><div class="ct">今日のラッキーフード</div><div class="cs">${isAeonMiyazaki(loc)?'昼食にはイオンモール宮崎の飲食店を表示':'朝食・昼食・夕食・おやつ 全占術連動'}</div></div></div>
     ${[
@@ -1499,7 +1319,6 @@ function runDaily(){
       </div>
     </div>`).join('')}
   </div>
-
   <div class="rc" style="background:linear-gradient(135deg,rgba(80,200,120,.1),rgba(7,4,15,.8))">
     <div class="ch"><div class="ci">📚</div><div><div class="ct">今週のおすすめ本</div><div class="cs">伸びるスキル：${book.sk}</div></div></div>
     <div class="ditem">
@@ -1512,7 +1331,6 @@ function runDaily(){
       </div>
     </div>
   </div>
-
   <div class="rc c-time">
     <div class="ch"><div class="ci">🎨</div><div><div class="ct">今日のラッキーカラー & ナンバー</div></div></div>
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
@@ -1533,22 +1351,17 @@ function runDaily(){
       </div>
     </div>
   </div>`;
-
   const div=document.getElementById('res-daily');div.innerHTML=html;
   div.scrollIntoView({behavior:'smooth',block:'start'});
 }
-
 const COLOR_HEX={'ゴールド':'#D4AF37','シルバー':'#C0C0C0','ロイヤルブルー':'#4169E1','ルビーレッド':'#9B111E','エメラルド':'#50C878','パープル':'#8B5CF6','ローズゴールド':'#B76E79','コバルト':'#0047AB','アイボリー':'#FFFFF0','ティール':'#4DC8E0'};
 function getColorHex(s){const c=getLuckyColor(s);return COLOR_HEX[c]||'#D4AF37'}
 
-// ── Calendar ──
 function getDayLuck(y,m,d){
-  // 六曜ベースで基準レベルを設定（正確な旧暦計算）
   const date = new Date(y, m-1, d);
   const rokuyo = getRokuyo(date);
   const rokuyoBase = {大安:5, 友引:4, 先勝:4, 先負:3, 赤口:2, 仏滅:1};
   const base = rokuyoBase[rokuyo] || 3;
-  // 九星気学（その日の月命星的な微調整）: seed乱数で±1の補正
   const seed = y*10000+m*100+d;
   const r = sRand(seed*77 + (userSeed()%99));
   const bonus = r > 0.72 ? 1 : (r < 0.22 ? -1 : 0);
@@ -1581,21 +1394,12 @@ function showCalDetail(d,l){
   det.classList.add('show');
 }
 function chgCalMonth(d){calMonth+=d;if(calMonth<0){calMonth=11;calYear--}if(calMonth>11){calMonth=0;calYear++}renderCalendar()}
-
-// ── Settings ──
 function saveSettings(){
   document.getElementById('saved-msg').style.display='block';
   setTimeout(()=>document.getElementById('saved-msg').style.display='none',2500);
 }
 
-
-// ============================================
-//  RESTAURANT SEARCH ENGINE
-//  Powered by OpenStreetMap / Overpass API
-//  完全無料・APIキー不要・全国対応
-// ============================================
-
-// 飲食店カテゴリマッピング
+// ── RESTAURANT SEARCH (OpenStreetMap / Overpass) ──
 const REST_CATEGORIES = {
   restaurant: {label:'レストラン', icon:'🍽️', query:'amenity=restaurant'},
   fast_food:  {label:'ファストフード', icon:'🍔', query:'amenity=fast_food'},
@@ -1605,8 +1409,6 @@ const REST_CATEGORIES = {
   izakaya:    {label:'居酒屋', icon:'🍺', query:'amenity=bar'},
   udon:       {label:'うどん・蕎麦', icon:'🍜', query:'cuisine=udon;soba'},
 };
-
-// 占い的な理由生成（スコアと合わせて）
 const REST_REASONS_TMPL = [
   '今日のラッキーカラーと一致するメニューが期待できます。運気との相性◎',
   '九星気学の吉方位にある飲食店。訪れることで開運エネルギーを取り込めます。',
@@ -1617,140 +1419,72 @@ const REST_REASONS_TMPL = [
   '今日の数秘${nm}と店舗の波動が一致。食事運が最高の場所。',
   'ルーン「${rune}」が示す場所。ここでの出会いが新しい縁を生みます。',
 ];
-
-let nearbyRestaurants = []; // キャッシュ
-
+let nearbyRestaurants = [];
 async function searchRestaurants() {
-  if (!coords) {
-    showErr('先に「現在地を取得」ボタンでGPS取得してください');
-    return;
-  }
-
+  if (!coords) { showErr('先に「現在地を取得」ボタンでGPS取得してください'); return; }
   const resultsDiv = document.getElementById('rest-results');
   const sourceDiv = document.getElementById('rest-source');
   const category = document.getElementById('rest-category').value;
   const radius = parseInt(document.getElementById('rest-radius').value);
-
   resultsDiv.innerHTML = '<div class="rest-loading">🔍 周辺の飲食店を検索中...</div>';
   sourceDiv.style.display = 'none';
-
   try {
-    // Overpass API クエリ構築
     const query = buildOverpassQuery(coords.lat, coords.lon, radius, category);
     const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
-
     const response = await fetch(url, { signal: AbortSignal.timeout(15000) });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-
     const restaurants = parseOverpassResults(data, coords, radius);
     nearbyRestaurants = restaurants;
-
     if (restaurants.length === 0) {
-      resultsDiv.innerHTML = `
-        <div class="search-status err">
-          📍 ${radius}m以内に飲食店データが見つかりませんでした。<br>
-          <span style="font-size:.68rem">範囲を広げるか、カテゴリを「すべて」で再検索してください</span>
-        </div>`;
+      resultsDiv.innerHTML = `<div class="search-status err">📍 ${radius}m以内に飲食店データが見つかりませんでした。<br><span style="font-size:.68rem">範囲を広げるか、カテゴリを「すべて」で再検索してください</span></div>`;
       return;
     }
-
     renderRestaurants(restaurants);
     sourceDiv.style.display = 'block';
-    document.getElementById('rest-search-cs').textContent =
-      `✅ ${restaurants.length}件の飲食店が見つかりました（${radius}m以内）`;
-
+    document.getElementById('rest-search-cs').textContent = `✅ ${restaurants.length}件の飲食店が見つかりました（${radius}m以内）`;
   } catch (err) {
     console.error('Overpass API error:', err);
-    resultsDiv.innerHTML = `
-      <div class="search-status err">
-        ⚠️ 飲食店の取得に失敗しました。<br>
-        <span style="font-size:.68rem">ネットワークエラーまたはAPIが一時的に利用不可。少し待ってから再試行してください。</span>
-      </div>`;
+    resultsDiv.innerHTML = `<div class="search-status err">⚠️ 飲食店の取得に失敗しました。<br><span style="font-size:.68rem">少し待ってから再試行してください。</span></div>`;
   }
 }
-
 function buildOverpassQuery(lat, lon, radius, category) {
   const around = `(around:${radius},${lat},${lon})`;
-
   if (category === 'all') {
-    return `[out:json][timeout:20];
-(
-  node["amenity"="restaurant"]${around};
-  node["amenity"="fast_food"]${around};
-  node["amenity"="cafe"]${around};
-  node["amenity"="bar"]${around};
-  node["amenity"="food_court"]${around};
-  node["cuisine"="ramen"]${around};
-  node["cuisine"="sushi"]${around};
-  node["cuisine"="udon"]${around};
-  node["cuisine"="soba"]${around};
-  way["amenity"="restaurant"]${around};
-  way["amenity"="fast_food"]${around};
-  way["amenity"="cafe"]${around};
-);
-out body center;`;
+    return `[out:json][timeout:20];\n(\n  node["amenity"="restaurant"]${around};\n  node["amenity"="fast_food"]${around};\n  node["amenity"="cafe"]${around};\n  node["amenity"="bar"]${around};\n  node["amenity"="food_court"]${around};\n  node["cuisine"="ramen"]${around};\n  node["cuisine"="sushi"]${around};\n  node["cuisine"="udon"]${around};\n  node["cuisine"="soba"]${around};\n  way["amenity"="restaurant"]${around};\n  way["amenity"="fast_food"]${around};\n  way["amenity"="cafe"]${around};\n);\nout body center;`;
   }
-
   const catInfo = REST_CATEGORIES[category];
   if (!catInfo) return buildOverpassQuery(lat, lon, radius, 'all');
-
-  const [key, val] = catInfo.query.includes(';')
-    ? catInfo.query.split('=')
-    : catInfo.query.split('=');
-
+  const [key, val] = catInfo.query.split('=');
   if (catInfo.query.includes(';')) {
-    // 複数値（udon;sobaなど）
     const vals = val.split(';');
     const nodes = vals.map(v => `node["${key}"="${v}"]${around};`).join('\n  ');
     return `[out:json][timeout:20];\n(\n  ${nodes}\n);\nout body center;`;
   }
-
-  return `[out:json][timeout:20];
-(
-  node["${key}"="${val}"]${around};
-  way["${key}"="${val}"]${around};
-);
-out body center;`;
+  return `[out:json][timeout:20];\n(\n  node["${key}"="${val}"]${around};\n  way["${key}"="${val}"]${around};\n);\nout body center;`;
 }
-
 function parseOverpassResults(data, userCoords, radius) {
   const elements = data.elements || [];
   const seen = new Set();
   const results = [];
-
   for (const el of elements) {
     const tags = el.tags || {};
     const name = tags.name || tags['name:ja'] || tags['name:en'];
     if (!name) continue;
     if (seen.has(name)) continue;
     seen.add(name);
-
-    // 座標取得
     const lat = el.lat || (el.center && el.center.lat);
     const lon = el.lon || (el.center && el.center.lon);
     if (!lat || !lon) continue;
-
-    // 距離計算
     const dist = calcDist(userCoords.lat, userCoords.lon, lat, lon);
     if (dist > radius) continue;
-
-    // カテゴリ判定
     const { icon, label } = detectCategory(tags);
-
-    // 住所
     const addr = buildAddress(tags);
-
-    // 営業時間
     const hours = tags['opening_hours'] || '';
-
     results.push({ name, icon, label, addr, dist, lat, lon, tags, hours });
   }
-
-  // 距離順でソート
   return results.sort((a, b) => a.dist - b.dist).slice(0, 20);
 }
-
 function calcDist(lat1, lon1, lat2, lon2) {
   const R = 6371000;
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -1758,38 +1492,26 @@ function calcDist(lat1, lon1, lat2, lon2) {
   const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
   return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
 }
-
 function detectCategory(tags) {
   const amenity = tags.amenity || '';
   const cuisine = tags.cuisine || '';
   const catMap = [
-    { key:'sushi', icon:'🍣', label:'寿司' },
-    { key:'ramen', icon:'🍜', label:'ラーメン' },
-    { key:'udon', icon:'🍜', label:'うどん・蕎麦' },
-    { key:'soba', icon:'🍜', label:'蕎麦' },
-    { key:'tempura', icon:'🍤', label:'天ぷら' },
-    { key:'yakitori', icon:'🍗', label:'焼き鳥' },
-    { key:'tonkatsu', icon:'🥩', label:'とんかつ' },
-    { key:'curry', icon:'🍛', label:'カレー' },
-    { key:'italian', icon:'🍝', label:'イタリアン' },
-    { key:'chinese', icon:'🥡', label:'中華料理' },
-    { key:'french', icon:'🥐', label:'フレンチ' },
-    { key:'burger', icon:'🍔', label:'バーガー' },
-    { key:'pizza', icon:'🍕', label:'ピザ' },
-    { key:'steak', icon:'🥩', label:'ステーキ' },
-    { key:'seafood', icon:'🦞', label:'海鮮' },
-    { key:'yakiniku', icon:'🥩', label:'焼肉' },
+    { key:'sushi', icon:'🍣', label:'寿司' },{ key:'ramen', icon:'🍜', label:'ラーメン' },
+    { key:'udon', icon:'🍜', label:'うどん・蕎麦' },{ key:'soba', icon:'🍜', label:'蕎麦' },
+    { key:'tempura', icon:'🍤', label:'天ぷら' },{ key:'yakitori', icon:'🍗', label:'焼き鳥' },
+    { key:'tonkatsu', icon:'🥩', label:'とんかつ' },{ key:'curry', icon:'🍛', label:'カレー' },
+    { key:'italian', icon:'🍝', label:'イタリアン' },{ key:'chinese', icon:'🥡', label:'中華料理' },
+    { key:'french', icon:'🥐', label:'フレンチ' },{ key:'burger', icon:'🍔', label:'バーガー' },
+    { key:'pizza', icon:'🍕', label:'ピザ' },{ key:'steak', icon:'🥩', label:'ステーキ' },
+    { key:'seafood', icon:'🦞', label:'海鮮' },{ key:'yakiniku', icon:'🥩', label:'焼肉' },
   ];
-  for (const c of catMap) {
-    if (cuisine.includes(c.key)) return { icon: c.icon, label: c.label };
-  }
+  for (const c of catMap) { if (cuisine.includes(c.key)) return { icon: c.icon, label: c.label }; }
   if (amenity === 'cafe') return { icon: '☕', label: 'カフェ' };
   if (amenity === 'fast_food') return { icon: '🍔', label: 'ファストフード' };
   if (amenity === 'bar') return { icon: '🍺', label: '居酒屋・バー' };
   if (amenity === 'food_court') return { icon: '🍽️', label: 'フードコート' };
   return { icon: '🍽️', label: 'レストラン' };
 }
-
 function buildAddress(tags) {
   const parts = [];
   if (tags['addr:province'] || tags['addr:state']) parts.push(tags['addr:province'] || tags['addr:state']);
@@ -1800,34 +1522,26 @@ function buildAddress(tags) {
   if (tags['addr:housenumber']) parts.push(tags['addr:housenumber']);
   return parts.join(' ') || '';
 }
-
 function renderRestaurants(restaurants) {
   const resultsDiv = document.getElementById('rest-results');
   const seed = combinedSeed();
   const d = computeAll();
   const tarotName = d.tarot?.n || 'タロット';
   const nmVal = d.nm || 5;
-
   const reasons = REST_REASONS_TMPL.map(r =>
     r.replace('${tarot}', tarotName).replace('${nm}', nmVal).replace('${rune}', d.rune?.n || 'ルーン')
   );
-
-  // 上位3件は特別表示
   const top3 = restaurants.slice(0, 3);
   const rest = restaurants.slice(3);
-
   let html = `<div class="search-status ok">✅ ${restaurants.length}件の飲食店が見つかりました</div>`;
-
-  // TOP3
   top3.forEach((r, i) => {
     const luckScore = Math.min(99, Math.max(60, Math.round(90 - i * 8 + (sRand(seed * 157 + i * 53) - 0.5) * 14)));
     const reason = reasons[(seed + i) % reasons.length];
     const rankLabel = i === 0 ? '🥇 第1位 — 最もラッキーな飲食店' : i === 1 ? '🥈 第2位' : '🥉 第3位';
     const mapUrl = `https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}`;
     const distStr = r.dist < 1000 ? `${r.dist}m` : `${(r.dist/1000).toFixed(1)}km`;
-
     html += `
-    <div class="rest-item ${i === 0 ? 'selected' : ''}" onclick="selectRestaurant(this, '${r.name.replace(/'/g,"\'")}')">
+    <div class="rest-item ${i === 0 ? 'selected' : ''}" onclick="selectRestaurant(this, '${r.name.replace(/'/g,"\\'")}')">
       <div class="rest-rank">${rankLabel} <span class="rest-dist">${distStr}</span></div>
       <div class="rest-name">${r.icon} ${r.name}</div>
       <div class="rest-type">
@@ -1840,70 +1554,29 @@ function renderRestaurants(restaurants) {
       <div style="margin-top:5px;font-size:.7rem">運気スコア：<span style="color:var(--gold-light);font-weight:700">${luckScore}pt</span> ${'★'.repeat(Math.round(luckScore/20))}${'☆'.repeat(5-Math.round(luckScore/20))}</div>
     </div>`;
   });
-
-  // 残りを折りたたみ表示
   if (rest.length > 0) {
-    html += `
-    <details style="margin-top:8px">
-      <summary style="cursor:pointer;font-size:.75rem;color:var(--muted);padding:8px;background:rgba(255,255,255,.03);border-radius:8px;list-style:none">
-        ▼ その他の周辺飲食店 ${rest.length}件を表示
-      </summary>
-      <div style="margin-top:6px">`;
-
-    rest.forEach((r, i) => {
+    html += `<details style="margin-top:8px"><summary style="cursor:pointer;font-size:.75rem;color:var(--muted);padding:8px;background:rgba(255,255,255,.03);border-radius:8px;list-style:none">▼ その他の周辺飲食店 ${rest.length}件を表示</summary><div style="margin-top:6px">`;
+    rest.forEach((r) => {
       const mapUrl = `https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}`;
       const distStr = r.dist < 1000 ? `${r.dist}m` : `${(r.dist/1000).toFixed(1)}km`;
-      html += `
-      <div class="rest-item" onclick="selectRestaurant(this, '${r.name.replace(/'/g,"\'")}')">
-        <div class="rest-name">${r.icon} ${r.name} <span class="rest-dist">${distStr}</span></div>
-        <div class="rest-type"><span class="rest-badge">${r.label}</span>
-          <a href="${mapUrl}" target="_blank" class="map-link">🗺️ 地図</a></div>
-        ${r.addr ? `<div class="rest-addr">📍 ${r.addr}</div>` : ''}
-      </div>`;
+      html += `<div class="rest-item" onclick="selectRestaurant(this, '${r.name.replace(/'/g,"\\'")}')"><div class="rest-name">${r.icon} ${r.name} <span class="rest-dist">${distStr}</span></div><div class="rest-type"><span class="rest-badge">${r.label}</span><a href="${mapUrl}" target="_blank" class="map-link">🗺️ 地図</a></div>${r.addr ? `<div class="rest-addr">📍 ${r.addr}</div>` : ''}</div>`;
     });
-
     html += `</div></details>`;
   }
-
   resultsDiv.innerHTML = html;
 }
-
 function selectRestaurant(el, name) {
-  // 選択状態トグル
   document.querySelectorAll('.rest-item').forEach(i => i.classList.remove('selected'));
   el.classList.add('selected');
-  // 食事欄に反映
   const sit = document.getElementById('situation');
   if (sit) sit.value = name + ' 付近';
 }
-
-// GPS取得時に自動で検索バーを表示
 function showRestaurantSearch() {
   document.getElementById('no-gps-msg').style.display = 'none';
   document.getElementById('rest-search-bar').style.display = 'block';
 }
 
-
-// ============================================
-//  LUCKY SPOT ENGINE
-//  OpenStreetMap / Overpass API 全国対応
-// ============================================
-
-// スポットカテゴリ定義
-const SPOT_TYPES = [
-  { key:'shrine',   icon:'⛩️',  label:'神社',     query:'historic=wayside_shrine',  q2:'amenity=place_of_worship religion=shinto' },
-  { key:'temple',   icon:'🏯',  label:'寺院',     query:'historic=temple' },
-  { key:'park',     icon:'🌿',  label:'公園',     query:'leisure=park' },
-  { key:'garden',   icon:'🌸',  label:'庭園',     query:'leisure=garden' },
-  { key:'castle',   icon:'🏰',  label:'城・史跡',  query:'historic=castle' },
-  { key:'museum',   icon:'🏛️',  label:'博物館',   query:'tourism=museum' },
-  { key:'viewpoint',icon:'👁️',  label:'展望台',   query:'tourism=viewpoint' },
-  { key:'hotspring',icon:'♨️',  label:'温泉',     query:'amenity=spa' },
-  { key:'beach',    icon:'🏖️',  label:'海岸・砂浜', query:'natural=beach' },
-  { key:'waterfall',icon:'💧',  label:'滝',       query:'waterway=waterfall' },
-];
-
-// 占術的な理由テンプレート（方位・タロット・九星と連動）
+// ── LUCKY SPOT ENGINE ──
 const SPOT_REASON_TEMPLATES = {
   shrine:    [ '九星気学の{dir}方位にある聖域。参拝することで邪気が払われ、{star}のパワーが増幅します。',
                '六白金星の気と神域のエネルギーが共鳴。今日訪れると特別なご縁が結ばれます。',
@@ -1923,7 +1596,6 @@ const SPOT_REASON_TEMPLATES = {
                '水の気が牡羊座の火と調和し、恋愛運と創造力が大幅にUP。' ],
   waterfall: [ '流水の浄化エネルギーが最強の開運スポット。タロット「{tarot}」の流れと一致。' ],
 };
-
 const GENERIC_REASONS = [
   '{dir}方位に位置し、今日の九星気学の吉方位と完全一致。',
   'タロット「{tarot}」の示す開運の地。今日訪れることで運気が大きく前進します。',
@@ -1931,71 +1603,43 @@ const GENERIC_REASONS = [
   '数秘{nm}の「変化」のエネルギーと共鳴する場所。新しい出会いの予兆あり。',
   'ルーン「{rune}」が示す力の源泉。ここを訪れることで本来の力が覚醒します。',
 ];
-
 async function fetchLuckySpots(seed, luckyDir) {
   const resultDiv = document.getElementById('lucky-spot-results');
   const subDiv    = document.getElementById('spot-card-sub');
   if (!resultDiv) return;
-
-  // 座標なし → フォールバック表示
   if (!coords) {
-    resultDiv.innerHTML = `
-      <div class="spot-no-gps">
-        📍 「現在地を取得」または住所を手動入力すると、<br>
-        <strong style="color:var(--gold-light)">全国どこでも</strong>周辺の開運スポットが表示されます<br>
-        <span style="font-size:.66rem">神社・寺院・公園・城・温泉など対応</span>
-      </div>`;
+    resultDiv.innerHTML = `<div class="spot-no-gps">📍 「現在地を取得」または住所を手動入力すると、<br><strong style="color:var(--gold-light)">全国どこでも</strong>周辺の開運スポットが表示されます<br><span style="font-size:.66rem">神社・寺院・公園・城・温泉など対応</span></div>`;
     if (subDiv) subDiv.textContent = '位置情報を設定するとスポットが表示されます';
     return;
   }
-
   resultDiv.innerHTML = '<div class="spot-loading">⛩️ 周辺の開運スポットを検索中...</div>';
   if (subDiv) subDiv.textContent = '検索中...';
-
   try {
-    const radius = 3000; // 3km以内
+    const radius = 3000;
     const query = buildSpotQuery(coords.lat, coords.lon, radius);
     const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
     const resp = await fetch(url, { signal: AbortSignal.timeout(18000) });
     if (!resp.ok) throw new Error('API error ' + resp.status);
     const data = await resp.json();
-
     const spots = parseSpots(data, coords, radius, seed);
-
-    if (spots.length === 0) {
-      // 範囲を広げて再検索
-      await fetchLuckySpotsWide(seed, luckyDir, resultDiv, subDiv);
-      return;
-    }
-
+    if (spots.length === 0) { await fetchLuckySpotsWide(seed, luckyDir, resultDiv, subDiv); return; }
     renderLuckySpots(spots, seed, luckyDir, resultDiv, subDiv);
-
   } catch(e) {
     console.warn('Spot fetch error:', e);
-    resultDiv.innerHTML = `
-      <div class="spot-no-gps" style="border-color:rgba(255,100,100,.3)">
-        ⚠️ スポット取得に失敗しました。<br>
-        <span style="font-size:.66rem">ネットワークエラーの可能性があります。少し待ってから再度「運勢を占う」をお試しください。</span>
-      </div>`;
+    resultDiv.innerHTML = `<div class="spot-no-gps" style="border-color:rgba(255,100,100,.3)">⚠️ スポット取得に失敗しました。<br><span style="font-size:.66rem">少し待ってから再度「運勢を占う」をお試しください。</span></div>`;
     if (subDiv) subDiv.textContent = 'スポット取得失敗';
   }
 }
-
 async function fetchLuckySpotsWide(seed, luckyDir, resultDiv, subDiv) {
   try {
-    const radius = 10000; // 10kmに拡大
+    const radius = 10000;
     const query = buildSpotQuery(coords.lat, coords.lon, radius);
     const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
     const resp = await fetch(url, { signal: AbortSignal.timeout(18000) });
     const data = await resp.json();
     const spots = parseSpots(data, coords, radius, seed);
-
     if (spots.length === 0) {
-      resultDiv.innerHTML = `
-        <div class="spot-no-gps">
-          📍 10km以内にスポット情報が見つかりませんでした。<br>
-          <span style="font-size:.66rem">OpenStreetMapのデータが少ない地域の可能性があります。</span>
-        </div>`;
+      resultDiv.innerHTML = `<div class="spot-no-gps">📍 10km以内にスポット情報が見つかりませんでした。<br><span style="font-size:.66rem">OpenStreetMapのデータが少ない地域の可能性があります。</span></div>`;
       if (subDiv) subDiv.textContent = 'スポットが見つかりませんでした';
       return;
     }
@@ -2004,68 +1648,33 @@ async function fetchLuckySpotsWide(seed, luckyDir, resultDiv, subDiv) {
     resultDiv.innerHTML = '<div class="spot-no-gps">⚠️ スポット取得に失敗しました。</div>';
   }
 }
-
 function buildSpotQuery(lat, lon, radius) {
   const ar = `(around:${radius},${lat},${lon})`;
-  return `[out:json][timeout:25];
-(
-  node["amenity"="place_of_worship"]["religion"="shinto"]${ar};
-  node["amenity"="place_of_worship"]["religion"="buddhist"]${ar};
-  node["historic"="castle"]${ar};
-  node["historic"="ruins"]${ar};
-  node["leisure"="park"]${ar};
-  node["leisure"="garden"]${ar};
-  node["tourism"="museum"]${ar};
-  node["tourism"="viewpoint"]${ar};
-  node["tourism"="attraction"]${ar};
-  node["amenity"="spa"]${ar};
-  node["natural"="beach"]${ar};
-  node["natural"="peak"]${ar};
-  node["waterway"="waterfall"]${ar};
-  way["amenity"="place_of_worship"]["religion"="shinto"]${ar};
-  way["amenity"="place_of_worship"]["religion"="buddhist"]${ar};
-  way["leisure"="park"]${ar};
-  way["historic"="castle"]${ar};
-  way["tourism"="museum"]${ar};
-  way["natural"="beach"]${ar};
-);
-out body center;`;
+  return `[out:json][timeout:25];\n(\n  node["amenity"="place_of_worship"]["religion"="shinto"]${ar};\n  node["amenity"="place_of_worship"]["religion"="buddhist"]${ar};\n  node["historic"="castle"]${ar};\n  node["historic"="ruins"]${ar};\n  node["leisure"="park"]${ar};\n  node["leisure"="garden"]${ar};\n  node["tourism"="museum"]${ar};\n  node["tourism"="viewpoint"]${ar};\n  node["tourism"="attraction"]${ar};\n  node["amenity"="spa"]${ar};\n  node["natural"="beach"]${ar};\n  node["natural"="peak"]${ar};\n  node["waterway"="waterfall"]${ar};\n  way["amenity"="place_of_worship"]["religion"="shinto"]${ar};\n  way["leisure"="park"]${ar};\n  way["historic"="castle"]${ar};\n  way["tourism"="museum"]${ar};\n  way["natural"="beach"]${ar};\n);\nout body center;`;
 }
-
 function parseSpots(data, userCoords, radius, seed) {
   const elements = data.elements || [];
   const seen = new Set();
   const results = [];
-
   for (const el of elements) {
     const tags = el.tags || {};
     const name = tags.name || tags['name:ja'] || tags['name:en'];
     if (!name || seen.has(name)) continue;
     seen.add(name);
-
     const lat = el.lat || (el.center && el.center.lat);
     const lon = el.lon || (el.center && el.center.lon);
     if (!lat || !lon) continue;
-
     const dist = calcDist(userCoords.lat, userCoords.lon, lat, lon);
-
     const { icon, label, key } = detectSpotCategory(tags);
     const addr = buildAddress(tags);
-
-    // 開運スコア（距離・カテゴリ・シードで算出）
     const distFactor = Math.max(0, 1 - dist / radius);
     const catBonus = { shrine:12, temple:10, castle:8, garden:8, hotspring:7, waterfall:9, beach:8, park:5, museum:4, viewpoint:5 };
     const baseScore = 65 + (catBonus[key] || 5) + distFactor * 20;
     const luckScore = Math.min(99, Math.max(55, Math.round(baseScore + (sRand(seed * 163 + results.length * 59) - 0.5) * 14)));
-
     results.push({ name, icon, label, key, addr, dist, lat, lon, tags, luckScore });
   }
-
-  return results
-    .sort((a, b) => b.luckScore - a.luckScore)
-    .slice(0, 15);
+  return results.sort((a, b) => b.luckScore - a.luckScore).slice(0, 15);
 }
-
 function detectSpotCategory(tags) {
   const amenity  = tags.amenity  || '';
   const historic = tags.historic || '';
@@ -2074,7 +1683,6 @@ function detectSpotCategory(tags) {
   const natural  = tags.natural  || '';
   const waterway = tags.waterway || '';
   const religion = tags.religion || '';
-
   if (amenity === 'place_of_worship') {
     if (religion === 'shinto') return { icon:'⛩️', label:'神社', key:'shrine' };
     return { icon:'🏯', label:'寺院', key:'temple' };
@@ -2091,50 +1699,34 @@ function detectSpotCategory(tags) {
   if (waterway === 'waterfall') return { icon:'💧', label:'滝', key:'waterfall' };
   return { icon:'📍', label:'スポット', key:'park' };
 }
-
 function renderLuckySpots(spots, seed, luckyDir, resultDiv, subDiv) {
-  // 占いデータ取得
   const d = computeAll ? computeAll() : {};
   const tarotName = d.tarot ? d.tarot.n : 'タロット';
   const nmVal = d.nm || 5;
   const runeVal = d.rune ? d.rune.n : 'ルーン';
   const dirVal = luckyDir || '南';
   const kyuName = document.getElementById('kyusei')?.value || '六白金星';
-
   function fillReason(tmpl) {
-    return tmpl
-      .replace('{dir}',   dirVal)
-      .replace('{tarot}', tarotName)
-      .replace('{nm}',    nmVal)
-      .replace('{rune}',  runeVal)
-      .replace('{star}',  kyuName);
+    return tmpl.replace('{dir}',dirVal).replace('{tarot}',tarotName).replace('{nm}',nmVal).replace('{rune}',runeVal).replace('{star}',kyuName);
   }
-
   function getReason(key, idx) {
     const tmpls = SPOT_REASON_TEMPLATES[key] || GENERIC_REASONS;
     return fillReason(tmpls[(seed + idx) % tmpls.length]);
   }
-
   const top3  = spots.slice(0, 3);
   const rest  = spots.slice(3);
   const rankIcons = ['🥇','🥈','🥉'];
   const rankClass = ['rank1','rank2','rank3'];
-
   if (subDiv) subDiv.textContent = `${spots.length}件の開運スポットが見つかりました`;
-
   let html = '';
   top3.forEach((s, i) => {
     const distStr = s.dist < 1000 ? `${s.dist}m` : `${(s.dist/1000).toFixed(1)}km`;
     const mapUrl  = `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`;
     const reason  = getReason(s.key, i);
     const stars   = '★'.repeat(Math.round(s.luckScore / 20)) + '☆'.repeat(5 - Math.round(s.luckScore / 20));
-
     html += `
     <div class="spot-item ${rankClass[i]}">
-      <div class="spot-rank-label">
-        <span>${rankIcons[i]} 第${i+1}位 開運スポット | ${s.label}</span>
-        <span class="spot-dist">📏 ${distStr}</span>
-      </div>
+      <div class="spot-rank-label"><span>${rankIcons[i]} 第${i+1}位 開運スポット | ${s.label}</span><span class="spot-dist">📏 ${distStr}</span></div>
       <div class="spot-name">${s.icon} ${s.name}</div>
       <div class="spot-cat">
         <span style="font-size:.62rem;padding:2px 8px;border-radius:10px;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.3);color:#C4B5FD;margin-right:5px">${s.label}</span>
@@ -2145,38 +1737,21 @@ function renderLuckySpots(spots, seed, luckyDir, resultDiv, subDiv) {
       <div class="spot-score">開運スコア：<span style="color:var(--gold-light);font-weight:700">${s.luckScore}pt</span> ${stars}</div>
     </div>`;
   });
-
   if (rest.length > 0) {
-    html += `
-    <details style="margin-top:8px">
-      <summary style="cursor:pointer;font-size:.74rem;color:var(--muted);padding:8px;background:rgba(255,255,255,.03);border-radius:8px;list-style:none">
-        ▼ その他の周辺スポット ${rest.length}件を表示
-      </summary>
-      <div style="margin-top:6px">`;
-    rest.forEach((s, i) => {
+    html += `<details style="margin-top:8px"><summary style="cursor:pointer;font-size:.74rem;color:var(--muted);padding:8px;background:rgba(255,255,255,.03);border-radius:8px;list-style:none">▼ その他の周辺スポット ${rest.length}件を表示</summary><div style="margin-top:6px">`;
+    rest.forEach((s) => {
       const distStr = s.dist < 1000 ? `${s.dist}m` : `${(s.dist/1000).toFixed(1)}km`;
       const mapUrl  = `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`;
-      html += `
-      <div class="spot-item">
-        <div class="spot-name">${s.icon} ${s.name} <span class="spot-dist" style="float:right">${distStr}</span></div>
-        <div class="spot-cat">
-          <span style="font-size:.6rem;padding:2px 7px;border-radius:10px;background:rgba(139,92,246,.15);color:#C4B5FD;margin-right:5px">${s.label}</span>
-          <a href="${mapUrl}" target="_blank" style="font-size:.66rem;color:var(--cyan);text-decoration:none">🗺️ 地図</a>
-        </div>
-        ${s.addr ? `<div class="spot-addr">📍 ${s.addr}</div>` : ''}
-      </div>`;
+      html += `<div class="spot-item"><div class="spot-name">${s.icon} ${s.name} <span class="spot-dist" style="float:right">${distStr}</span></div><div class="spot-cat"><span style="font-size:.6rem;padding:2px 7px;border-radius:10px;background:rgba(139,92,246,.15);color:#C4B5FD;margin-right:5px">${s.label}</span><a href="${mapUrl}" target="_blank" style="font-size:.66rem;color:var(--cyan);text-decoration:none">🗺️ 地図</a></div>${s.addr ? `<div class="spot-addr">📍 ${s.addr}</div>` : ''}</div>`;
     });
     html += `</div></details>`;
   }
-
   html += `<div style="font-size:.58rem;color:var(--muted);text-align:right;margin-top:8px">データ出典: OpenStreetMap contributors (ODbL)</div>`;
   resultDiv.innerHTML = html;
 }
 
 // ── Init ──
 renderCalendar();
-
-// 生年月日から九星を自動計算
 function calcKyuseiFromBdate(bdateStr){
   if(!bdateStr)return;
   const by=parseInt(bdateStr.split('-')[0]);
@@ -2198,45 +1773,27 @@ function showZiweiChart() {
   const btime = document.getElementById('btime')?.value || '06:18';
   const chart = calcZiweiChart(bdate, btime, 'male');
   if(!chart) { alert('命盤計算エラー。生年月日をご確認ください。'); return; }
-
   const now = new Date();
   const flow = getTodayFlowPalace(chart, [now.getFullYear(), now.getMonth()+1, now.getDate()]);
-
-  const PAL_COLORS = {
-    命宮:'#D4AF37', 遷移宮:'#9B8EC4', 官禄宮:'#6CA0DC', 財帛宮:'#5CB85C',
-    夫妻宮:'#E8729A', 福徳宮:'#E8A030', 田宅宮:'#6BB8B8',
-  };
   const CAT_COL = {吉:'#5CB85C', 中:'#E8A030', 凶:'#E85050'};
-
-  // 命盤グリッド (3×4)
-  // 伝統的な配置: 反時計回りに宮を並べる
-  // 巳午未申
-  // 辰    酉
-  // 卯    戌
-  // 寅丑子亥
   const GRID_POS = [
-    // [col, row] (0-indexed, 4col×4row grid)
-    {b:2,pos:[0,3]},{b:1,pos:[1,3]},{b:0,pos:[2,3]},{b:11,pos:[3,3]}, // 寅丑子亥 (bottom)
-    {b:3,pos:[0,2]},{b:10,pos:[3,2]}, // 卯   戌
-    {b:4,pos:[0,1]},{b:9,pos:[3,1]},  // 辰   酉
-    {b:5,pos:[0,0]},{b:6,pos:[1,0]},{b:7,pos:[2,0]},{b:8,pos:[3,0]}, // 巳午未申 (top)
+    {b:2,pos:[0,3]},{b:1,pos:[1,3]},{b:0,pos:[2,3]},{b:11,pos:[3,3]},
+    {b:3,pos:[0,2]},{b:10,pos:[3,2]},
+    {b:4,pos:[0,1]},{b:9,pos:[3,1]},
+    {b:5,pos:[0,0]},{b:6,pos:[1,0]},{b:7,pos:[2,0]},{b:8,pos:[3,0]},
   ];
-
   const cellData = {};
   GRID_POS.forEach(({b,pos})=>{
     const palIdx = (b - chart.mingGong + 12) % 12;
     const pal = chart.palaces[palIdx];
     cellData[b] = { ...pal, pos, isFlowDay: flow && flow.flowDayBranch === b };
   });
-
   const gridStyle = `display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,auto);gap:3px;`;
-
   let gridCells = '';
   for(let row=0; row<4; row++) {
     for(let col=0; col<4; col++) {
       if(row===1&&col===1||row===1&&col===2||row===2&&col===1||row===2&&col===2) {
         if(row===1&&col===1) {
-          // Center area: birth info
           gridCells += `<div style="grid-column:2/4;grid-row:2/4;background:rgba(30,15,60,.95);border:1px solid rgba(201,168,76,.4);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;text-align:center">
             <div style="font-size:.65rem;color:var(--gold);margin-bottom:4px">☯ 命盤</div>
             <div style="font-size:.72rem;color:var(--text)">${chart.lunar.year}年 旧暦${chart.lunar.month}月${chart.lunar.day}日</div>
@@ -2250,7 +1807,6 @@ function showZiweiChart() {
       }
       const cellEntry = Object.values(cellData).find(c=>c.pos[0]===col&&c.pos[1]===row);
       if(!cellEntry) { gridCells += '<div></div>'; continue; }
-
       const borderCol = cellEntry.isMinGong ? '#D4AF37' : cellEntry.isShenGong ? '#9B8EC4' : cellEntry.isFlowDay ? '#6CA0DC' : 'rgba(201,168,76,.25)';
       const bg = cellEntry.isFlowDay ? 'rgba(107,168,220,.12)' : 'rgba(20,10,40,.9)';
       const mainStarHtml = cellEntry.mainStars.map(s => {
@@ -2261,7 +1817,6 @@ function showZiweiChart() {
         const isEvil = ['擎羊','陀羅','火星','鈴星'].includes(s);
         return `<span style="color:${isEvil?'#E85050':'#8EC4C4'};font-size:.58rem">${s}</span>`;
       }).join(' ');
-
       gridCells += `<div style="background:${bg};border:1px solid ${borderCol};border-radius:5px;padding:4px 3px;min-height:72px">
         <div style="font-size:.6rem;color:var(--muted)">${cellEntry.name}${cellEntry.isMinGong?'★':''}${cellEntry.isShenGong?'◎':''}${cellEntry.isFlowDay?'▶':''}</div>
         <div style="font-size:.62rem;color:rgba(201,168,76,.6)">${cellEntry.branch}</div>
@@ -2270,33 +1825,23 @@ function showZiweiChart() {
       </div>`;
     }
   }
-
   const flowInfo = flow ? `
     <div style="margin-top:12px;padding:10px;background:rgba(107,168,220,.1);border:1px solid rgba(107,168,220,.4);border-radius:8px">
       <div style="font-size:.7rem;color:#6CA0DC;margin-bottom:4px">▶ 今日の流日鑑定 (${now.getMonth()+1}/${now.getDate()})</div>
       <div style="font-size:.72rem;color:var(--text)">流年：${flow.flowYearName}宮 → 流月：${flow.flowMonthName}宮 → 流日：【${flow.palaceName}(${flow.flowDayName})】</div>
-      <div style="font-size:.7rem;color:var(--muted);margin-top:4px">
-        活性化星：${flow.mainStars.join('・')||'なし'} ${flow.auxStars.length>0?'/ 副星：'+flow.auxStars.join('・'):''}
-      </div>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:4px">活性化星：${flow.mainStars.join('・')||'なし'} ${flow.auxStars.length>0?'/ 副星：'+flow.auxStars.join('・'):''}</div>
       ${flow.mainStars.map(s=>ZW_STAR_INFO[s]).filter(Boolean).map(i=>`<div style="font-size:.68rem;color:${CAT_COL[i.cat]||'var(--gold)'};margin-top:2px">${i.desc}</div>`).join('')}
     </div>` : '';
-
   const legendHtml = `
     <div style="margin-top:10px;font-size:.62rem;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap">
-      <span style="color:#D4AF37">★命宮</span>
-      <span style="color:#9B8EC4">◎身宮</span>
-      <span style="color:#6CA0DC">▶流日</span>
-      <span style="color:#5CB85C">■吉星</span>
-      <span style="color:#E8A030">■中星</span>
-      <span style="color:#E85050">■凶星</span>
-      <span style="color:#8EC4C4">■補助吉</span>
-      <span style="color:#E85050">■煞星</span>
+      <span style="color:#D4AF37">★命宮</span><span style="color:#9B8EC4">◎身宮</span><span style="color:#6CA0DC">▶流日</span>
+      <span style="color:#5CB85C">■吉星</span><span style="color:#E8A030">■中星</span><span style="color:#E85050">■凶星</span>
+      <span style="color:#8EC4C4">■補助吉</span><span style="color:#E85050">■煞星</span>
     </div>`;
-
   const modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:9999;overflow-y:auto;padding:16px;box-sizing:border-box';
   modal.innerHTML = `
-    <div style="max-width:480px;margin:0 auto;background:var(--card);border-radius:12px;border:1px solid rgba(201,168,76,.4);padding:16px">
+    <div style="max-width:480px;margin:0 auto;background:#14082A;border-radius:12px;border:1px solid rgba(201,168,76,.4);padding:16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div style="color:var(--gold);font-size:.95rem;font-weight:bold">🌟 紫微斗数 命盤</div>
         <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer">✕</button>
@@ -2312,7 +1857,15 @@ function showZiweiChart() {
   document.body.appendChild(modal);
   modal.addEventListener('click', e=>{ if(e.target===modal) modal.remove(); });
 }
-
+</script>
+<script>
+// ── PWA Service Worker 登録 ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .catch(err => console.warn('SW registration failed:', err));
+  });
+}
 </script>
 </body>
 </html>
