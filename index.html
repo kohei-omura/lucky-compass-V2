@@ -34,6 +34,31 @@ header{text-align:center;padding:36px 0 22px}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 h1{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.12em;margin-bottom:5px}
 .subtitle{font-size:.7rem;color:var(--muted);letter-spacing:.2em}
+/* ── 開運日バッジ／今月の開運日 ── */
+.kaiun-bar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:0 0 10px;min-height:0}
+.kaiun-badge{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;font-weight:700;
+  padding:4px 10px;border-radius:999px;letter-spacing:.04em;
+  background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.28);color:var(--gold-light)}
+.kaiun-badge.top{background:linear-gradient(135deg,rgba(201,168,76,.9),rgba(240,208,128,.9));
+  border-color:var(--gold-light);color:#2A1F05;box-shadow:0 0 12px rgba(201,168,76,.45)}
+.kaiun-badge.bad{border-color:rgba(154,138,176,.4);color:var(--muted);background:rgba(255,255,255,.02)}
+.kaiun-month{margin:0 0 14px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.18);border-radius:12px;overflow:hidden}
+.kaiun-month>summary{cursor:pointer;padding:9px 12px;font-size:.75rem;color:var(--gold-light);
+  font-weight:700;letter-spacing:.06em;list-style:none;user-select:none}
+.kaiun-month>summary::-webkit-details-marker{display:none}
+.kaiun-month>summary::after{content:'▾';float:right;color:var(--muted);transition:transform .2s}
+.kaiun-month[open]>summary::after{transform:rotate(180deg)}
+.kaiun-month-body{padding:2px 12px 12px;border-top:1px solid rgba(201,168,76,.12)}
+.km-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.06);font-size:.72rem}
+.km-row:last-child{border-bottom:none}
+.km-day{flex:0 0 62px;color:var(--gold);font-weight:700}
+.km-tags{flex:1;color:var(--text);line-height:1.5}
+.km-ry{flex:0 0 auto;color:var(--muted);font-size:.66rem}
+.km-bad{color:var(--muted)}
+.share-btn{margin-top:10px;border:1px solid rgba(201,168,76,.4);background:rgba(255,255,255,.05);
+  color:var(--gold-light);border-radius:999px;padding:7px 16px;font-size:.72rem;font-weight:700;
+  letter-spacing:.05em;cursor:pointer;font-family:inherit}
+.share-btn:active{background:rgba(201,168,76,.18)}
 .info-bar{display:flex;gap:8px;margin:16px 0 12px}
 .info-chip{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:9px 8px;text-align:center}
 .ic-label{color:var(--gold);font-size:.6rem;letter-spacing:.1em;margin-bottom:2px}
@@ -190,6 +215,13 @@ footer{text-align:center;padding:22px 0 12px;color:var(--muted);font-size:.66rem
   <div class="info-chip"><div class="ic-label">🌙 六曜</div><div class="ic-val" id="ry">--</div></div>
   <div class="info-chip"><div class="ic-label">📍 位置</div><div class="ic-val" id="loc">未取得</div></div>
 </div>
+
+<div id="kaiunBar" class="kaiun-bar"></div>
+
+<details class="kaiun-month">
+  <summary>📅 今月の開運日</summary>
+  <div id="kaiunMonth" class="kaiun-month-body"></div>
+</details>
 
 <div class="tab-nav">
   <button class="tb active" onclick="switchTab('fortune',this)">🔮 今日の運勢</button>
@@ -440,9 +472,26 @@ function _monthStartK(j){ const cd=_civilDay(j); let k=Math.round((j-9/24-245155
 function _jdToGY(j){ return new Date((j-9/24-2440587.5)*86400000).getUTCFullYear(); }
 function _wsJST(gy){ return _solarTermUT(2451545+365.2422*(gy-2000)+355,270)+9/24; }
 function _hasZhongqi(k){ const a=_newMoonJST(k),b=_newMoonJST(k+1); const la=_sunLong(a-9/24); const nd=(Math.floor(la/30)+1)*30,tg=((nd%360)+360)%360; const ap=(a-9/24)+(((nd-la)%360+360)%360)*(365.2422/360); const t=_solarTermUT(ap,tg)+9/24; return t>=a&&t<b; }
+// ── タイムゾーン堅牢化 ──────────────────────────────────────
+// 暦計算の入口をJST固定にする共通ヘルパー。計算式本体は一切変更していない。
+//
+// 旧実装の問題: _lunarMD は _toJD(date)+9/24 で「その瞬間のJST暦日」を採る。
+//   画面は端末ローカルの日付を表示するため、端末がJST以外だと両者が食い違った。
+//   実測: UTC端末の7/16 15:00以降、NY端末の7/16 12:00以降で 旧6/4・先負 に誤る
+//        （正しくは 旧6/3・友引）。JST端末では常に正常。
+// さらに _lunarCache のキーがローカル日付なのに値は瞬間から計算されていたため、
+//   その日最初に呼ばれた時刻で結果が固定され、ズレが再現しづらくなっていた。
+//
+// 方針: 六曜・旧暦は「暦日に付く属性」であり、2026-07-16 は日本の暦で常に友引。
+//   よって端末ローカルの暦日(Y/M/D)を取り出し、それをJST正午(=03:00 UTC)の瞬間に
+//   固定して計算に渡す。これで端末TZに関係なく同じ暦日として解釈される。
+function _jstDate(d){
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 3, 0, 0));
+}
 const _lunarCache={};
 function _lunarMD(date){
-  const key=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+  date=_jstDate(date);   // ← 入口でJST固定。以降の計算式は不変
+  const key=date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate();
   if(_lunarCache[key]) return _lunarCache[key];
   const j=_toJD(date)+9/24, cd=_civilDay(j);
   const kCur=_monthStartK(j), day=cd-_civilDay(_newMoonJST(kCur))+1;
@@ -459,13 +508,184 @@ function getRokuyo(d=new Date()){
   return ROKUYO[((lm+ld)%6+6)%6];
 }
 
+// ════════════════════════════════════════════════════════════
+//  日柱・日家九星（日盤）
+//  日柱アンカー: 1970-01-01 = 辛巳 = 六十干支 index17（epochDay 0）
+//  日家九星は「冬至に最も近い甲子日から陽遁（一白水星から順行）、
+//  夏至に最も近い甲子日から陰遁（九紫火星から逆行）」の標準則。
+//  至日は既存の _solarTermUT（黄経270/90）を流用し、新規の天文計算は作らない。
+//  検証: 2026-07-13=三碧木星 / 07-14=二黒土星 / 07-15=一白水星 / 07-16=九紫火星
+// ════════════════════════════════════════════════════════════
+const _STEMS='甲乙丙丁戊己庚辛壬癸', _BRANCHES='子丑寅卯辰巳午未申酉戌亥';
+const KYUSEI_DAY_LIST=['一白水星','二黒土星','三碧木星','四緑木星','五黄土星','六白金星','七赤金星','八白土星','九紫火星'];
+// 端末TZに関係なく同じ暦日を指す通日（_jstDate と同じ「ローカル暦日をJST暦日として読む」方針）
+function _epochDay(d){ return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())/86400000); }
+function _kanshiIdx(d){ return ((_epochDay(d)+17)%60+60)%60; }
+function getDayKan(d=new Date()){ const k=_kanshiIdx(d); return _STEMS[k%10]+_BRANCHES[k%12]; }
+function getDayBranch(d=new Date()){ return _BRANCHES[_kanshiIdx(d)%12]; }
+function getDayStem(d=new Date()){ return _STEMS[_kanshiIdx(d)%10]; }
+// 夏至（黄経90°）のJST。冬至は既存 _wsJST(270) を使う
+function _ssJST(gy){ return _solarTermUT(2451545+365.2422*(gy-2000)+172,90)+9/24; }
+function _epFromJstJd(j){ return _civilDay(j)-2440588; }
+// 至日に最も近い甲子日（甲子は epochDay ≡ 43 mod 60。等距離なら至日前を優先）
+function _nearestKoshiEp(se){ const b=((se-43)%60+60)%60, p=se-b, n=p+60; return (se-p)<=(n-se)?p:n; }
+const _koshiCache={};
+function _koshiAnchors(gy){
+  if(_koshiCache[gy]) return _koshiCache[gy];
+  return _koshiCache[gy]=[
+    {ep:_nearestKoshiEp(_epFromJstJd(_wsJST(gy))), inton:false},  // 冬至 → 陽遁（一白順行）
+    {ep:_nearestKoshiEp(_epFromJstJd(_ssJST(gy))), inton:true }   // 夏至 → 陰遁（九紫逆行）
+  ];
+}
+function getDayKyusei(d=new Date()){
+  const e=_epochDay(d), gy=d.getFullYear();
+  let c=[];
+  for(let y=gy-1;y<=gy+1;y++) c=c.concat(_koshiAnchors(y));
+  const a=c.filter(x=>x.ep<=e).sort((p,q)=>q.ep-p.ep)[0];
+  if(!a) return KYUSEI_DAY_LIST[((e+5)%9+9)%9];
+  const n=e-a.ep;
+  return KYUSEI_DAY_LIST[a.inton ? ((8-n)%9+9)%9 : ((n)%9+9)%9];
+}
+// 九星の五行と、本命星との関係（相生／相剋／比和）
+const KYUSEI_GOGYO={一白水星:'水',二黒土星:'土',三碧木星:'木',四緑木星:'木',五黄土星:'土',
+                    六白金星:'金',七赤金星:'金',八白土星:'土',九紫火星:'火'};
+const _SHO={木:'火',火:'土',土:'金',金:'水',水:'木'};   // 相生（生じる先）
+const _KOKU={木:'土',土:'水',水:'火',火:'金',金:'木'};  // 相剋（剋す先）
+function getKyuseiRelation(honmei, day){
+  const a=KYUSEI_GOGYO[honmei], b=KYUSEI_GOGYO[day];
+  if(!a||!b) return {type:'—', msg:''};
+  if(a===b)        return {type:'比和', msg:`${b}の気が本命星と重なり、力が素直に増す日。`};
+  if(_SHO[b]===a)  return {type:'相生', msg:`日盤の${b}が本命星の${a}を生む。周囲から後押しを受けやすい日。`};
+  if(_SHO[a]===b)  return {type:'相生', msg:`本命星の${a}が日盤の${b}を生む。与える側に回ると運が開く日。`};
+  if(_KOKU[b]===a) return {type:'相剋', msg:`日盤の${b}が本命星の${a}を剋す。無理押しを避け守りを固める日。`};
+  if(_KOKU[a]===b) return {type:'相剋', msg:`本命星の${a}が日盤の${b}を剋す。主導権は取れるが力みすぎに注意。`};
+  return {type:'—', msg:''};
+}
+
+// ════════════════════════════════════════════════════════════
+//  開運日エンジン（既存の日柱計算・旧暦エンジンからのみ導出。新規の暦計算なし）
+//  2026年7月の検証値と一致することを確認済み:
+//    一粒万倍日 6,7,10,19,22,31 ／ 天赦日 19 ／ 寅の日 3,15,27 ／ 巳の日 6,18,30
+//    不成就日 5,13,19,27（7/19は天赦日＋一粒万倍日と重複）
+// ════════════════════════════════════════════════════════════
+// 節入りの黄経（節月1=立春 … 12=小寒）
+const _SETSU_ANG=[315,345,15,45,75,105,135,165,195,225,255,285];
+const _setsuCache={};
+function _termEp(gy,ang){
+  const k=gy+':'+ang;
+  if(_setsuCache[k]!==undefined) return _setsuCache[k];
+  // 近似: 春分(黄経0°)を通日79として、1周360°=365.2422日で線形に当たりをつける
+  const ap=2451545+365.2422*(gy-2000)+79+((ang%360)/360)*365.2422;
+  return _setsuCache[k]=_civilDay(_solarTermUT(ap,ang)+9/24)-2440588;
+}
+// その日が属する節月（1=立春月 … 12=小寒月）
+function getSetsuMonth(d){
+  const e=_epochDay(d), gy=d.getFullYear();
+  let best=null;
+  for(let y=gy-1;y<=gy+1;y++) for(let i=0;i<12;i++){
+    const te=_termEp(y,_SETSU_ANG[i]);
+    if(te<=e && (!best||te>best.te)) best={te,mi:i+1};
+  }
+  return best?best.mi:1;
+}
+// 一粒万倍日: 節月 × 日支 の標準対応表
+const ICHIRYU_TABLE={1:['丑','午'],2:['酉','寅'],3:['子','卯'],4:['卯','辰'],5:['巳','午'],6:['酉','午'],
+                     7:['子','未'],8:['卯','申'],9:['午','酉'],10:['酉','戌'],11:['亥','子'],12:['卯','子']};
+// 不成就日: 旧暦月別の8日周期（閏月は本月と同じ扱い）
+const FUJOJU_TABLE={1:[3,11,19,27],7:[3,11,19,27], 2:[2,10,18,26],8:[2,10,18,26],
+                    3:[1,9,17,25], 9:[1,9,17,25],  4:[4,12,20,28],10:[4,12,20,28],
+                    5:[5,13,21,29],11:[5,13,21,29],6:[6,14,22,30],12:[6,14,22,30]};
+// 天赦日: 立春〜立夏=戊寅 / 立夏〜立秋=甲午 / 立秋〜立冬=戊申 / 立冬〜立春=甲子
+function isTensha(d){
+  const sm=getSetsuMonth(d), st=getDayStem(d), br=getDayBranch(d);
+  if(sm>=1&&sm<=3)  return st==='戊'&&br==='寅';   // 立春〜立夏
+  if(sm>=4&&sm<=6)  return st==='甲'&&br==='午';   // 立夏〜立秋
+  if(sm>=7&&sm<=9)  return st==='戊'&&br==='申';   // 立秋〜立冬
+  return st==='甲'&&br==='子';                      // 立冬〜立春
+}
+function getKaiunBadges(d=new Date()){
+  const br=getDayBranch(d), l=_lunarMD(d), out=[];
+  if(ICHIRYU_TABLE[getSetsuMonth(d)].indexOf(br)>=0) out.push({k:'ichiryu',n:'一粒万倍日',e:'🌾',good:true});
+  if(isTensha(d))                                    out.push({k:'tensha', n:'天赦日',   e:'😊',good:true,top:true});
+  if(br==='寅')                                      out.push({k:'tora',   n:'寅の日',   e:'🐯',good:true});
+  if(br==='巳')                                      out.push({k:'mi',     n:'巳の日',   e:'🐍',good:true});
+  if((FUJOJU_TABLE[l.month]||[]).indexOf(l.day)>=0)  out.push({k:'fujoju', n:'不成就日', e:'⚠',good:false});
+  return out;
+}
+// 当月の開運日一覧（不成就日のみの日は載せない）
+function getMonthKaiun(year, month){
+  const last=new Date(year, month+1, 0).getDate(), list=[];
+  for(let i=1;i<=last;i++){
+    const d=new Date(year, month, i), b=getKaiunBadges(d);
+    if(b.some(x=>x.good)) list.push({day:i, badges:b, rokuyo:getRokuyo(d)});
+  }
+  return list;
+}
+
+// ── 共有 ──
+// iOS PWA 対策: クリックハンドラ内で await/then を挟まず navigator.share を同期的に呼ぶ。
+// 非同期処理を先に挟むとユーザー操作との関連が切れ、iOS で share が拒否されるため。
+let _lastFortune=null;   // computeAll() の結果（共有文の組み立て用）
+function buildShareText(){
+  const n=new Date();
+  const d=_lastFortune;
+  if(!d) return '';
+  const badges=getKaiunBadges(n).map(x=>x.e+x.n).join(' ');
+  const color=(typeof FENGSHUI_COLOR!=='undefined' && d.seed!=null)
+    ? FENGSHUI_COLOR[Math.floor(sRand(d.seed*59)*8)] : '金';
+  return `🔮 ${n.getMonth()+1}/${n.getDate()}（${getRokuyo(n)}）総合運${d.total}点`
+       + (badges?`\n${badges}`:'')
+       + `\nラッキーカラー:${color}`;
+}
+function shareFortune(btn){
+  const text=buildShareText();
+  if(!text) return;
+  if(navigator.share){ navigator.share({text:text}).catch(function(){}); return; }   // ← await を挟まない
+  const done=function(){ const o=btn.textContent; btn.textContent='✅ コピーしました';
+                         setTimeout(function(){ btn.textContent=o; },1600); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done,function(){});
+  } else {
+    const ta=document.createElement('textarea');
+    ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); done(); }catch(e){}
+    document.body.removeChild(ta);
+  }
+}
+
+// 当日の開運日バッジ（天赦日は金色で強調。複数該当は並べる）
+function renderKaiunBar(){
+  const el=document.getElementById('kaiunBar'); if(!el) return;
+  const b=getKaiunBadges(new Date());
+  el.innerHTML=b.map(x=>`<span class="kaiun-badge${x.top?' top':''}${x.good?'':' bad'}">${x.e} ${x.n}</span>`).join('');
+}
+// 今月の開運日一覧（開運日のみ。不成就日が重なる日は注記する）
+function renderKaiunMonth(){
+  const el=document.getElementById('kaiunMonth'); if(!el) return;
+  const n=new Date(), list=getMonthKaiun(n.getFullYear(), n.getMonth());
+  const days=['日','月','火','水','木','金','土'];
+  if(!list.length){ el.innerHTML='<div class="km-row km-bad">今月の開運日はありません</div>'; return; }
+  el.innerHTML=list.map(o=>{
+    const dt=new Date(n.getFullYear(), n.getMonth(), o.day);
+    const good=o.badges.filter(x=>x.good).map(x=>x.e+x.n).join(' ＋ ');
+    const bad=o.badges.some(x=>!x.good)?' <span class="km-bad">※不成就日重複</span>':'';
+    const isToday=o.day===n.getDate();
+    return `<div class="km-row"${isToday?' style="background:rgba(201,168,76,.08)"':''}>
+      <div class="km-day">${n.getMonth()+1}/${o.day}(${days[dt.getDay()]})</div>
+      <div class="km-tags">${good}${bad}</div>
+      <div class="km-ry">${o.rokuyo}</div></div>`;
+  }).join('');
+}
+
 function updateDT(){
   const n=new Date();
   const days=['日','月','火','水','木','金','土'];
   document.getElementById('dt').textContent=`${n.getMonth()+1}/${n.getDate()}(${days[n.getDay()]}) ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
   document.getElementById('ry').textContent=getRokuyo(n);
+  renderKaiunBar();
 }
-updateDT(); setInterval(updateDT,30000);
+updateDT(); renderKaiunMonth(); setInterval(updateDT,30000);
 
 (function(){
   const c=document.getElementById('game-selector');
@@ -948,12 +1168,16 @@ function computeAll(){
     {min:0,v:'末吉 ✦ 慎重な一日を',col:'var(--muted)'}
   ];
   const verdict=verdicts.find(v=>total>=v.min)||verdicts[verdicts.length-1];
-  return{total,verdict,ws,tarot,nm,ns,rune,ks,ss,ssMsg:shichuMsg(seed),zs,zsMsg:ziweiMsg(seed),fs,fdir,fsMsg:fengshuiMsg(seed,fdir),zeros,seimeis,bs,sms,rs,omi,hours,places:placeTypes,foods,seed,now};
+  const dayKyusei=getDayKyusei(now);
+  const honmei=document.getElementById('kyusei')?.value||'七赤金星';
+  const kRel=getKyuseiRelation(honmei, dayKyusei);
+  return{total,verdict,ws,tarot,nm,ns,rune,ks,ss,ssMsg:shichuMsg(seed),zs,zsMsg:ziweiMsg(seed),fs,fdir,fsMsg:fengshuiMsg(seed,fdir),zeros,seimeis,bs,sms,rs,omi,hours,places:placeTypes,foods,seed,now,dayKyusei,kRel,honmei};
 }
 function var_green(){return '#50C878'}
 
 function runFortune(){
   const d=computeAll();
+  _lastFortune=d;   // 共有文の組み立て用に保持
   const scoreColor=s=>s>=90?'#FFD700':s>=80?'var(--gold-light)':s>=70?'var(--green)':s>=60?'#87CEEB':'var(--muted)';
   const topHours=d.hours.slice(0,4);
   const situation=document.getElementById('situation').value||locName;
@@ -963,7 +1187,7 @@ function runFortune(){
     {n:'タロット',s:d.tarot.s,msg:`「${d.tarot.n}」${d.tarot.i} — ${d.tarot.msg}`},
     {n:'数秘術',s:d.ns,msg:`命数${d.nm}：${NUMER_MSG[d.nm]||'変化と成長の数。今日を大切に。'}`},
     {n:'ルーン',s:d.rune.s,msg:`${d.rune.i}${d.rune.n}（${d.rune.mean}）— 今日のキーワードは「${d.rune.mean}」。`},
-    {n:'九星気学',s:d.ks,msg:`${document.getElementById('kyusei')?.value||'六白金星'}：今月の気の流れとの相性から運勢を鑑定。`},
+    {n:'九星気学',s:d.ks,msg:`${d.honmei}：今月の気の流れとの相性から運勢を鑑定。 ▶ 日盤：${d.dayKyusei}（本命星と${d.kRel.type}）。${d.kRel.msg}`},
     {n:'四柱推命',s:d.ss,msg:d.ssMsg},
     {n:'紫微斗数',s:d.zs,msg:d.zsMsg,extra:'chart'},
     {n:'風水',s:d.fs,msg:d.fsMsg},
@@ -994,6 +1218,7 @@ function runFortune(){
     </div>
     <div class="verdict" style="color:${d.verdict.col}">${d.verdict.v}</div>
     <div style="font-size:.7rem;color:var(--muted)">${new Date().getMonth()+1}月${new Date().getDate()}日 ✦ ${situation} ✦ ${getRokuyo()}</div>
+    <button type="button" class="share-btn" onclick="shareFortune(this)">📤 今日の運勢を共有</button>
   </div>
   <div class="rc c-time">
     <div class="ch"><div class="ci">⏰</div><div><div class="ct">ラッキータイム</div><div class="cs">運気ピーク時間帯 TOP4</div></div></div>
